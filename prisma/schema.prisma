@@ -1,0 +1,30 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            String   @id @default(cuid())
+  username      String   @unique
+  email         String   @unique
+  fullName      String
+  bio           String?
+  profilePic    String?
+  createdAt     DateTime @default(now())
+  provider      Provider @default(MANUAL)
+  providerId    String?  
+  socialLinks   Json?    
+}
+
+enum Provider {
+  MANUAL
+  GOOGLE
+  FACEBOOK
+  X
+  INSTAGRAM
+  LINKEDIN
+}
