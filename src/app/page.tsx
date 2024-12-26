@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 
 const Page = () => {
   return (
-    <main className="relative flex flex-col gap-0 h-[150vh] items-start justify-center bg-gradient-to-t from-gray-900 via-gray-800 to-gray-900 text-white">
+    <main className="relative flex flex-col gap-0 h-[100vh] items-start justify-center bg-gradient-to-t from-gray-900 via-gray-800 to-gray-900 text-white">
       {/* Navbar */}
       <nav className="absolute top-0 left-0 right-0 p-4 mx-6 flex justify-between items-center bg-transparent bg-opacity-70 backdrop-blur-md z-20">
         <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-gray-200 to-gray-800">
@@ -13,7 +13,7 @@ const Page = () => {
         </h1>
         <div className="space-x-6">
           <Button className="text-md bg-gradient-to-r from-gray-800 to-gray-600 px-6 py-3 rounded-md hover:scale-105 transform transition-all">
-            <a href="/register">Sign In</a>
+            <a href="/signup">Sign In</a>
           </Button>
           <Button className="text-md bg-gradient-to-r from-gray-600 to-gray-800 px-6 py-3 rounded-md hover:scale-105 transform transition-all">
             <a href="/login">Log In</a>
