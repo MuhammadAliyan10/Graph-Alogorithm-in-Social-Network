@@ -8,6 +8,6 @@ export default async function Layout({
   children: React.ReactNode;
 }) {
   const { user } = await validateRequest();
-  if (user) redirect("/");
+  if (user) redirect("/home");
   return <>{children}</>;
 }
