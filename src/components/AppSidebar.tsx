@@ -7,6 +7,7 @@ import {
   Info,
   Settings,
   LogOut,
+  Network,
 } from "lucide-react";
 
 import {
@@ -23,6 +24,7 @@ import {
   SidebarSeparator,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
+import { logout } from "@/auth";
 
 // Application menu items.
 const applicationItems = [
@@ -32,9 +34,14 @@ const applicationItems = [
     icon: Home,
   },
   {
-    title: "Graph Algorithm",
+    title: "Social Graph",
     url: "/graph",
     icon: ChartScatter,
+  },
+  {
+    title: "Network Evolution",
+    url: "/networkEvolution",
+    icon: Network,
   },
   {
     title: "About",

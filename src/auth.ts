@@ -3,6 +3,7 @@ import prisma from "./lib/prisma";
 import { cache } from "react";
 import { Lucia } from "lucia";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 const adapter = new PrismaAdapter(prisma.session, prisma.user);
 
@@ -106,3 +107,28 @@ export const validateRequest = cache(
     }
   }
 );
+
+export const logout = async (): Promise<void> => {
+  try {
+    const sessionCookieName = lucia.sessionCookieName;
+    const cookieStore = cookies();
+    const sessionId = (await cookieStore).get(sessionCookieName)?.value ?? null;
+
+    if (!sessionId) {
+      console.log("No session found to invalidate.");
+      return;
+    }
+    await lucia.invalidateSession(sessionId);
+
+    const blankSessionCookie = lucia.createBlankSessionCookie();
+    (await cookieStore).set(
+      blankSessionCookie.name,
+      blankSessionCookie.value,
+      blankSessionCookie.attributes
+    );
+
+    redirect("/login");
+  } catch (error) {
+    console.error("Error during logout:", error);
+  }
+};
