@@ -12,6 +12,12 @@ import {
 import "reactflow/dist/style.css";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
+// import { Metadata } from "next";
+
+// export const metadata: Metadata = {
+//   title: "Network Evolution",
+// };
+
 interface User {
   id: string;
   name: string;
@@ -73,7 +79,7 @@ const Page: React.FC = () => {
 
   const mockUsers: User[] = [
     { id: "1", name: "Muhammad Aliyan", interests: ["Football", "Coding"] },
-    { id: "2", name: "Usama", interests: ["Coding", "TikTok"] },
+    { id: "2", name: "Usama", interests: ["TikTok"] },
     { id: "3", name: "Zarar", interests: ["TikTok", "Gaming"] },
   ];
 

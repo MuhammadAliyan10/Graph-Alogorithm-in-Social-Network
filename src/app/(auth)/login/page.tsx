@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import React from "react";
-import logInImage from "@/assets/Main-bg.png";
+import logInImage from "@/assets/Login.jpg";
 import Image from "next/image";
 import Link from "next/link";
 import LoginForm from "./LoginForm";

@@ -1,3 +1,4 @@
+"use client";
 import {
   ChartScatter,
   Users,
@@ -9,6 +10,7 @@ import {
   LogOut,
   Network,
 } from "lucide-react";
+import { logout } from "@/app/(auth)/actions";
 
 import {
   Sidebar,
@@ -24,7 +26,6 @@ import {
   SidebarSeparator,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
-import { logout } from "@/auth";
 
 // Application menu items.
 const applicationItems = [
@@ -88,7 +89,16 @@ const userItems = [
   },
 ];
 
+// Logout handler
+
 export function AppSidebar() {
+  const logoutUser = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error("Logout failed", error);
+    }
+  };
   return (
     <Sidebar>
       <div className="flex flex-col h-full">
@@ -124,7 +134,6 @@ export function AppSidebar() {
 
           <SidebarSeparator />
 
-          {/* Social Group */}
           <SidebarGroup>
             <SidebarGroupLabel>Social</SidebarGroupLabel>
             <SidebarGroupContent>
@@ -156,13 +165,23 @@ export function AppSidebar() {
                 {userItems.map((item) => (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton asChild>
-                      <Link
-                        href={item.url}
-                        className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-700"
-                      >
-                        <item.icon className="w-5 h-5" />
-                        <span className="text-sm">{item.title}</span>
-                      </Link>
+                      {item.title === "Logout" ? (
+                        <div
+                          onClick={logoutUser}
+                          className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-700 cursor-pointer"
+                        >
+                          <item.icon className="w-5 h-5" />
+                          <span className="text-sm">{item.title}</span>
+                        </div>
+                      ) : (
+                        <Link
+                          href={item.url}
+                          className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-700"
+                        >
+                          <item.icon className="w-5 h-5" />
+                          <span className="text-sm">{item.title}</span>
+                        </Link>
+                      )}
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}

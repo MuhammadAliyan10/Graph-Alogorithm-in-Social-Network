@@ -1,5 +1,4 @@
 "use client";
-
 import dynamic from "next/dynamic";
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,6 +15,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
+import { Metadata } from "next";
+
 const ReactFlow = dynamic(
   () => import("reactflow").then((mod) => mod.ReactFlow),
   { ssr: false }
@@ -26,16 +27,19 @@ import { DialogClose } from "@radix-ui/react-dialog";
 
 export default function GraphPage() {
   const [nodes, setNodes] = useState([
-    { id: "1", data: { label: "Facebook" }, position: { x: 250, y: 5 } },
-    { id: "2", data: { label: "Google" }, position: { x: 100, y: 100 } },
-    { id: "3", data: { label: "Instagram" }, position: { x: 400, y: 100 } },
-    { id: "4", data: { label: "X" }, position: { x: 250, y: 200 } },
+    { id: "1", data: { label: "Google" }, position: { x: 300, y: 5 } },
+    { id: "2", data: { label: "Facebook" }, position: { x: 100, y: 100 } },
+    { id: "3", data: { label: "Instagram" }, position: { x: 300, y: 100 } },
+    { id: "4", data: { label: "TikTok" }, position: { x: 500, y: 100 } },
+    { id: "5", data: { label: "X" }, position: { x: 300, y: 200 } },
   ]);
 
   const [edges, setEdges] = useState([
-    { id: "e1-2", source: "1", target: "3", animated: true },
-    { id: "e2-3", source: "2", target: "3", animated: true },
-    { id: "e3-4", source: "4", target: "2", animated: true },
+    { id: "e1-2", source: "1", target: "2", animated: true },
+    { id: "e1-3", source: "1", target: "3", animated: true },
+    { id: "e1-4", source: "1", target: "4", animated: true },
+    { id: "e2-5", source: "2", target: "5", animated: true },
+    { id: "e3-5", source: "3", target: "5", animated: true },
   ]);
 
   const [newNodeName, setNewNodeName] = useState("");

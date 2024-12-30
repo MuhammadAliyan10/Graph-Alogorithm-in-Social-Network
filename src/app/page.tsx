@@ -1,138 +1,217 @@
 "use client";
+
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
+import graphImage from "../assets/Main/Graph.gif";
+import Evolution from "../assets/Main/Evolution.png";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Separator } from "@/components/ui/separator";
+import ShinyText from "@/components/Animated/ShinyText";
+import { BlurText } from "../components/Animated/BlurText";
+import Link from "next/link";
+import Image from "next/image";
 
 const Page = () => {
   return (
-    <main className="relative flex flex-col gap-0 h-[100vh] items-start justify-center bg-gradient-to-t from-gray-900 via-gray-800 to-gray-900 text-white">
-      {/* Navbar */}
-      <nav className="absolute top-0 left-0 right-0 p-4 mx-6 flex justify-between items-center bg-transparent bg-opacity-70 backdrop-blur-md z-20">
-        <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-gray-200 to-gray-800">
-          NetViz
-        </h1>
-        <div className="space-x-6">
-          <Button className="text-md bg-gradient-to-r from-gray-800 to-gray-600 px-6 py-3 rounded-md hover:scale-105 transform transition-all">
-            <a href="/signup">Sign In</a>
-          </Button>
-          <Button className="text-md bg-gradient-to-r from-gray-600 to-gray-800 px-6 py-3 rounded-md hover:scale-105 transform transition-all">
-            <a href="/login">Log In</a>
-          </Button>
+    <>
+      {/* Header */}
+      <header className="bg-background text-foreground shadow-lg">
+        <nav className="flex justify-between items-center mx-6 py-4">
+          <div>
+            <h4>
+              <ShinyText
+                text="NetWiz"
+                disabled={false}
+                speed={2}
+                className="text-3xl font-bold"
+              />
+            </h4>
+          </div>
+          <div>
+            <Button variant="secondary">
+              <Link href={"/signup"}>Get Started</Link>
+            </Button>
+          </div>
+        </nav>
+      </header>
+      <Separator />
+
+      <section className="flex flex-col items-center justify-center text-center h-[90vh] w-full">
+        <BlurText
+          text="Welcome to the World of Connections"
+          className="text-7xl font-extrabold"
+          delay={40}
+        />
+        <ShinyText
+          text="Unlocking the Potential of Graph Algorithms in Social Networks"
+          disabled={false}
+          speed={3}
+          className="text-4xl my-4 "
+        />
+        <Button className="mt-6 px-[10rem] py-4 text-1xl tracking-widest">
+          Get Started
+        </Button>
+      </section>
+
+      {/* Description Section */}
+      <section className="mx-8 h-[60vh]">
+        <h2 className="text-3xl font-bold text-start my-8">
+          Create and Visualize Dynamic Social Network Graphs
+        </h2>
+        <div className="grid grid-cols-2 gap-x-6 items-center">
+          <div>
+            <p className="text-muted-foreground italic text-1xl leading-8">
+              Our platform empowers users to actively create and visualize
+              dynamic social network graphs. This tool is indispensable for
+              understanding and exploring complex relationships between
+              entities. By adding nodes representing various elements—such as
+              social media platforms—and drawing connections through edges,
+              users can intuitively organize and examine their networks. The
+              interface allows for the repositioning of nodes, offering
+              flexibility in how the network is viewed. A user-friendly dialog
+              interface simplifies the process of adding new nodes, ensuring a
+              seamless experience. This interactive tool is especially valuable
+              for experimenting with graph algorithms, analyzing connections,
+              and visualizing how different entities interact within the
+              network. Offering real-time visualization, it facilitates the
+              identification of patterns, clusters, and connections, making it a
+              powerful resource for learning, experimentation, and network
+              analysis.
+            </p>
+          </div>
+          <div>
+            <Image
+              src={graphImage}
+              alt="GraphImage"
+              className="h-full relative"
+            />
+          </div>
         </div>
-      </nav>
+      </section>
 
-      <div className="relative left-0 z-10 mt-[8rem] ml-10 w-full sm:w-1/2">
-        {/* App Title */}
-        <motion.h1
-          className="text-6xl sm:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-gray-400 to-gray-800 mb-6"
-          initial={{ opacity: 0, y: -50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-        >
-          NetWiz: Connect, Analyze & Visualize
-        </motion.h1>
+      {/* Evolution Section */}
+      <section className="mx-8  my-[10rem]">
+        <h2 className="text-3xl font-bold text-start my-8">
+          The Evolution of Social Network Graph Visualization
+        </h2>
+        <div className="grid grid-cols-2 gap-x-6 items-center">
+          <div>
+            <Image src={Evolution} alt="Evolution" />
+          </div>
+          <div>
+            <h3 className="text-muted-foreground italic text-1xl leading-8">
+              Over time, social networks have evolved into complex and
+              interconnected ecosystems. Understanding the intricate
+              relationships within these networks requires sophisticated
+              visualization tools. By harnessing advanced graph algorithms,
+              users can gain deeper insights into network dynamics. This section
+              provides an overview of how our platform continues to evolve,
+              offering users cutting-edge tools for visualizing and analyzing
+              social networks in innovative ways.
+            </h3>
+          </div>
+        </div>
+      </section>
+      <Separator />
 
-        {/* App Description */}
-        <motion.p
-          className="text-1xl italic md:text-1xl text-gray-300 leading-relaxed mb-8"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.2 }}
-        >
-          Explore the power of graph algorithms with our Social Network analysis
-          tool. Connect with your network, visualize relationships, and optimize
-          interactions for a better online experience. NetWiz uses advanced
-          algorithms to help you analyze and visualize complex relationships
-          across your social media network. Discover hidden insights, track
-          influential connections, and improve your online engagement
-          strategies.
-        </motion.p>
+      {/* Explanation Section */}
+      <section className="bg-background py-16 px-6">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-4xl font-bold text-center mb-8">Our Approach</h2>
+          <p className="text-lg text-muted-foreground mb-6">
+            At NetWiz, we employ advanced graph algorithms to uncover actionable
+            insights and meaningful patterns within social networks. Our mission
+            is to transform raw network data into valuable information by
+            analyzing connections, community structures, and user interactions.
+            Here's an overview of our approach to revolutionizing the way
+            networks are visualized and understood.
+          </p>
+          <Accordion type="single" collapsible>
+            <AccordionItem value="item-1">
+              <AccordionTrigger className="text-xl font-medium">
+                What Are Graph Algorithms in Social Networks?
+              </AccordionTrigger>
+              <AccordionContent>
+                Graph algorithms are sophisticated computational methods
+                designed to analyze relationships within a network. In social
+                networks, these algorithms model interactions among users,
+                groups, and pages. By examining these connections, we can
+                identify influential nodes, uncover hidden communities, and
+                detect emerging trends.
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="item-2">
+              <AccordionTrigger className="text-xl font-medium">
+                Why Are Graph Algorithms Important?
+              </AccordionTrigger>
+              <AccordionContent>
+                Graph algorithms are essential for understanding the dynamics of
+                social networks. They allow businesses and organizations to
+                optimize user engagement, recommend relevant content, and detect
+                anomalies such as spam or fraud. By identifying patterns, these
+                algorithms provide actionable insights that drive
+                decision-making.
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="item-3">
+              <AccordionTrigger className="text-xl font-medium">
+                How Does NetWiz Apply Graph Theory?
+              </AccordionTrigger>
+              <AccordionContent>
+                NetWiz applies a comprehensive suite of graph algorithms to
+                process complex network data. Our methodology involves intuitive
+                visualizations that highlight key network insights, such as user
+                behavior, interaction clusters, and trend predictions. By
+                offering an interactive and user-friendly experience, we empower
+                users to explore and analyze their networks effectively.
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        </div>
+      </section>
 
-        {/* Features Section */}
-        <motion.div
-          className="mb-8"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 0.3 }}
-        >
-          <h2 className="text-3xl font-semibold text-white mb-4">
-            Key Features
-          </h2>
-          <ul className="space-y-6 text-md italic text-gray-300 ">
-            <li className="flex items-center">
-              <span className="text-yellow-400">✨ </span> Personalized
-              recommendations using graph algorithms
-            </li>
-            <li className="flex items-center">
-              <span className="text-blue-400">🔗 </span> Seamless integration
-              with social media platforms like Facebook, X, and Instagram
-            </li>
-            <li className="flex items-center">
-              <span className="text-green-400">📊 </span> Advanced social
-              network analysis
-            </li>
-            <li className="flex items-center">
-              <span className="text-purple-400">🔒 </span> Private and secure
-              data handling
-            </li>
-          </ul>
-        </motion.div>
+      <Separator />
 
-        <motion.div
-          className="space-y-4 text-gray-400"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 0.6 }}
-        >
-          <ul>
-            <li>
-              <p>
-                Contribute on{" "}
-                <a
-                  href="https://github.com/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-400 hover:underline"
-                >
-                  GitHub
-                </a>
-              </p>
-            </li>
-            <li>
-              <p>
-                Follow us on{" "}
-                <a
-                  href="https://x.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-400 hover:underline"
-                >
-                  X (formerly Twitter)
-                </a>
-              </p>
-            </li>
-            <li>
-              <p>
-                Connect with friends on{" "}
-                <a
-                  href="https://facebook.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-400 hover:underline"
-                >
-                  Facebook
-                </a>
-              </p>
-            </li>
-          </ul>
-        </motion.div>
-      </div>
+      {/* Explore More Section */}
+      <section className="bg-background py-16 px-6">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-4xl font-bold mb-8">Explore Further</h2>
+          <p className="text-lg text-muted-foreground mb-6">
+            Ready to dive deeper into the world of network analysis and graph
+            algorithms? Our platform provides extensive resources, tutorials,
+            and documentation to help you enhance your understanding of social
+            network dynamics. Whether you're a researcher, developer, or
+            enthusiast, NetWiz equips you with the tools you need to explore,
+            analyze, and visualize social networks.
+          </p>
+          <Button className="px-8 py-4 text-lg">Start Exploring</Button>
+        </div>
+      </section>
+
+      <Separator />
 
       {/* Footer */}
-      <footer className="bg-gray-800 text-center text-gray-400 py-6 mt-auto w-full">
-        <p>&copy; 2024 NetWiz. All Rights Reserved.</p>
+      <footer className="text-muted-foreground py-10">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center">
+          <div className="text-center md:text-left mb-6 md:mb-0">
+            <h4 className="text-xl font-semibold">NetWiz</h4>
+            <p className="text-sm">
+              Redefining Connectivity in the Digital Age
+            </p>
+          </div>
+          <div className="flex space-x-4">
+            <Button variant="ghost">Privacy Policy</Button>
+            <Button variant="ghost">Terms of Service</Button>
+            <Button variant="ghost">Contact Us</Button>
+          </div>
+        </div>
       </footer>
-    </main>
+    </>
   );
 };
 
