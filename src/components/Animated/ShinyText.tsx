@@ -3,7 +3,7 @@ const ShinyText = ({ text, disabled = false, speed = 5, className = "" }) => {
 
   return (
     <div
-      className={`text-[#b5b5b5a4] bg-clip-text inline-block ${
+      className={`text-[#b5b5b5a4] bg-clip-text ${
         disabled ? "" : "animate-shine"
       } ${className}`}
       style={{
@@ -14,7 +14,9 @@ const ShinyText = ({ text, disabled = false, speed = 5, className = "" }) => {
         animationDuration: animationDuration,
       }}
     >
-      {text}
+      {text.split("\n").map((line, index) => (
+        <div key={index}>{line}</div>
+      ))}
     </div>
   );
 };
