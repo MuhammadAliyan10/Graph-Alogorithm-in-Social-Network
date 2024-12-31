@@ -16,7 +16,8 @@ const page = () => {
           <div className="space-y-1 text-center">
             <h1 className="text-3xl font-bold">Sign Up</h1>
             <p className="text-muted-foreground">
-              A place where <span className="italic">you</span> can't be alone.
+              A place where <span className="italic">you</span> can&apos;'t be
+              alone.
             </p>
           </div>
           <div className="space-y-5">

@@ -15,8 +15,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-import { Metadata } from "next";
-
 const ReactFlow = dynamic(
   () => import("reactflow").then((mod) => mod.ReactFlow),
   { ssr: false }

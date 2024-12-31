@@ -18,7 +18,7 @@ import LoadingButton from "@/components/LoadingButton";
 
 export default function SignupForm() {
   const [error, setError] = useState<string>();
-  const [pending, isPending] = useTransition();
+  const [isPending, startTransition] = useTransition();
   const form = useForm<signupValue>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
@@ -90,7 +90,7 @@ export default function SignupForm() {
             </FormItem>
           )}
         />
-        <LoadingButton loading={pending} type="submit" className="w-full">
+        <LoadingButton loading={isPending} type="submit" className="w-full">
           Create Account
         </LoadingButton>
       </form>

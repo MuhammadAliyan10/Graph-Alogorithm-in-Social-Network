@@ -21,6 +21,7 @@ export default function WaveText() {
   return (
     <div className="flex items-center justify-center h-full">
       <animated.svg
+        as="svg"
         className="w-[350px]"
         style={{ scale, opacity }}
         viewBox="0 0 200 50"

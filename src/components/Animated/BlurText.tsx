@@ -1,30 +1,58 @@
 import { useRef, useEffect, useState } from "react";
 import { useSprings, animated } from "@react-spring/web";
 
-export const BlurText = ({ text, delay = 200, className = "" }) => {
+interface BlurTextProps {
+  text: string;
+  delay?: number;
+  className?: string;
+}
+
+export const BlurText = ({
+  text,
+  delay = 200,
+  className = "",
+}: BlurTextProps) => {
   const words = text.split(" ");
   const [inView, setInView] = useState(false);
-  const ref = useRef();
+  const ref = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           setInView(true);
-          observer.unobserve(ref.current);
+          if (ref.current) {
+            observer.unobserve(ref.current);
+          }
         }
       },
       { threshold: 0.1 }
     );
 
-    observer.observe(ref.current);
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
 
     return () => observer.disconnect();
   }, []);
 
+  interface SpringProps {
+    filter: string;
+    opacity: number;
+    transform: string;
+  }
+
+  interface SpringConfig {
+    from: SpringProps;
+    to:
+      | SpringProps
+      | ((next: (props: SpringProps) => Promise<void>) => Promise<void>);
+    delay: number;
+  }
+
   const springs = useSprings(
     words.length,
-    words.map((_, i) => ({
+    words.map<SpringConfig>((_, i) => ({
       from: {
         filter: "blur(10px)",
         opacity: 0,
@@ -43,7 +71,11 @@ export const BlurText = ({ text, delay = 200, className = "" }) => {
               transform: "translate3d(0,0,0)",
             });
           }
-        : { filter: "blur(10px)", opacity: 0 },
+        : {
+            filter: "blur(10px)",
+            opacity: 0,
+            transform: "translate3d(0,-50px,0)",
+          },
       delay: i * delay,
     }))
   );
@@ -56,7 +88,7 @@ export const BlurText = ({ text, delay = 200, className = "" }) => {
           style={props}
           className="inline-block will-change-transform will-change-filter will-change-opacity"
         >
-          {words[index]}&nbsp;
+          {`${words[index]} `}
         </animated.span>
       ))}
     </p>

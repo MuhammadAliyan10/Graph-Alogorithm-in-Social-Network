@@ -5,32 +5,34 @@ import {
   addEdge,
   MarkerType,
   Node,
+  EdgeChange,
   Edge,
   applyNodeChanges,
   applyEdgeChanges,
+  Connection,
 } from "reactflow";
 import "reactflow/dist/style.css";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
-// import { Metadata } from "next";
-
-// export const metadata: Metadata = {
-//   title: "Network Evolution",
-// };
-
+// User type for our mock users
 interface User {
   id: string;
   name: string;
   interests: string[];
 }
 
+// CustomNode type extends Node with a label in the data
 interface CustomNode extends Node {
   data: {
     label: string;
   };
 }
 
+// CustomEdge type extends Edge with additional properties
 interface CustomEdge {
+  id: string;
+  source: string;
+  target: string;
   label: string;
   markerEnd: {
     type: MarkerType;
@@ -89,14 +91,19 @@ const Page: React.FC = () => {
   const [users, setUsers] = useState<User[]>(mockUsers);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
-  // Add New Connections Dynamically
-  const onConnect = useCallback(
-    (params: Edge) =>
-      setEdges((eds) =>
-        addEdge({ ...params, markerEnd: { type: MarkerType.ArrowClosed } }, eds)
-      ),
-    []
-  );
+  const onConnect = useCallback((connection: Connection) => {
+    // Map the connection to a CustomEdge
+    if (connection.source && connection.target) {
+      const newEdge: CustomEdge = {
+        id: `e${connection.source}-${connection.target}`,
+        source: connection.source,
+        target: connection.target,
+        label: "New Edge",
+        markerEnd: { type: MarkerType.ArrowClosed },
+      };
+      setEdges((eds) => addEdge(newEdge, eds) as CustomEdge[]);
+    }
+  }, []);
 
   // Add New Node Dynamically
   const addNode = (name: string) => {
@@ -105,6 +112,7 @@ const Page: React.FC = () => {
       id,
       data: { label: name },
       position: { x: Math.random() * 400, y: Math.random() * 400 },
+      type: "default",
     };
     setNodes((nds) => [...nds, newNode]);
   };
@@ -119,6 +127,12 @@ const Page: React.FC = () => {
         )
     );
   };
+  const onEdgesChange = (changes: EdgeChange[]) =>
+    setEdges((eds) => {
+      // Apply changes and cast the result to CustomEdge[]
+      const updatedEdges = applyEdgeChanges(changes, eds) as CustomEdge[];
+      return updatedEdges;
+    });
 
   const handleUserClick = (id: string) => {
     const user = users.find((u) => u.id === id);
@@ -201,11 +215,6 @@ const Page: React.FC = () => {
                           {node.data.label}
                         </div>
                       </CardHeader>
-                      {/* <CardContent>
-                        <div className="text-sm text-gray-500">
-                          Interests: Football, Gaming
-                        </div>
-                      </CardContent> */}
                     </Card>
                   ),
                 },
@@ -214,12 +223,10 @@ const Page: React.FC = () => {
               onNodesChange={(changes) =>
                 setNodes((nds) => applyNodeChanges(changes, nds))
               }
-              onEdgesChange={(changes) =>
-                setEdges((eds) => applyEdgeChanges(changes, eds))
-              }
+              onEdgesChange={onEdgesChange}
               onConnect={onConnect}
               fitView
-            ></ReactFlow>
+            />
           </CardContent>
         </Card>
       </div>
