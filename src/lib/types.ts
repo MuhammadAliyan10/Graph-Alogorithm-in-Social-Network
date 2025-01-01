@@ -6,3 +6,9 @@ export function getUserDataSelect(loggedInUserId: string) {
     email: true,
   };
 }
+
+declare global {
+  interface Window {
+    FB: any;
+  }
+}

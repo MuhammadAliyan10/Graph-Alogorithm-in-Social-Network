@@ -46,7 +46,7 @@ const Page = () => {
               <div>
                 <ul className="hidden lg:flex justify-between items-center gap-x-8">
                   <li className="text-muted-foreground">
-                    <Link href={""}>About</Link>
+                    <Link href={""}>Pricing</Link>
                   </li>
                   <li className="text-muted-foreground">
                     <Link href={""}>Documentation</Link>
@@ -56,14 +56,10 @@ const Page = () => {
                   </li>
                 </ul>
               </div>
-              <div className="flex justify-between items-center gap-x-5">
-                <Button variant="secondary">
-                  <Link href={"/signup"}>Login</Link>
-                </Button>
-                <Button variant="secondary">
-                  <Link href={"/signup"}>Get Started</Link>
-                </Button>
-              </div>
+
+              <Button>
+                <Link href={"/signup"}>Get Started</Link>
+              </Button>
             </header>
           </div>
 
@@ -213,22 +209,22 @@ const Page = () => {
         </section>
 
         {/* Footer */}
-        <footer className="text-muted-foreground py-10 snap-start h-screen flex flex-col justify-center">
-          <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center">
-            <div className="text-center md:text-left mb-6 md:mb-0">
-              <h4 className="text-xl font-semibold">NetWiz</h4>
-              <p className="text-sm">
-                Redefining Connectivity in the Digital Age
-              </p>
-            </div>
-            <div className="flex space-x-4">
-              <Button variant="ghost">Privacy Policy</Button>
-              <Button variant="ghost">Terms of Service</Button>
-              <Button variant="ghost">Contact Us</Button>
-            </div>
-          </div>
-        </footer>
       </div>
+      <footer className="text-muted-foreground py-10 snap-start h-screen flex flex-col justify-center">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center">
+          <div className="text-center md:text-left mb-6 md:mb-0">
+            <h4 className="text-xl font-semibold">NetWiz</h4>
+            <p className="text-sm">
+              Redefining Connectivity in the Digital Age
+            </p>
+          </div>
+          <div className="flex space-x-4">
+            <Button variant="ghost">Privacy Policy</Button>
+            <Button variant="ghost">Terms of Service</Button>
+            <Button variant="ghost">Contact Us</Button>
+          </div>
+        </div>
+      </footer>
     </>
   );
 };

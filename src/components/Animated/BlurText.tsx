@@ -88,7 +88,7 @@ export const BlurText = ({
           style={props}
           className="inline-block will-change-transform will-change-filter will-change-opacity"
         >
-          {`${words[index]} `}
+          <span>{`${words[index]} `}</span>
         </animated.span>
       ))}
     </p>
