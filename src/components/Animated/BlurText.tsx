@@ -83,12 +83,13 @@ export const BlurText = ({
   return (
     <p ref={ref} className={`inline-block ${className}`}>
       {springs.map((props, index) => (
+        // @ts-expect-error: Suppress type error for animated.span
         <animated.span
           key={index}
           style={props}
           className="inline-block will-change-transform will-change-filter will-change-opacity"
         >
-          <span>{`${words[index]} `}</span>
+          {words[index]}&nbsp;
         </animated.span>
       ))}
     </p>

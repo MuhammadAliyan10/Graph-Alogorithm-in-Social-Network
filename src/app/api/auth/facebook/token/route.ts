@@ -23,7 +23,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
 
-    // Create JWT token
     const token = jwt.sign(
       { userId: user.id, facebookId: user.facebook_id },
       JWT_SECRET,
