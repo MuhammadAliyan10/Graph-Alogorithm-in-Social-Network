@@ -37,7 +37,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
 
-    // If the user does not already have a providerId set to the facebook_id, update it
     if (user.providerId !== facebook_id) {
       await prisma.user.update({
         where: { id: loggedInUser.id },
@@ -54,7 +53,7 @@ export async function POST(request: Request) {
     if (!facebookUser) {
       facebookUser = await prisma.facebookUser.create({
         data: {
-          facebook_id,
+          facebook_id: facebook_id,
           name: name || "Unknown User",
           email: email || null,
           userId: loggedInUser.id,
@@ -62,14 +61,12 @@ export async function POST(request: Request) {
       });
     }
 
-    // Step 4: Generate a JWT token for the user
     const token = jwt.sign(
-      { userId: loggedInUser.id, facebookId: facebookUser.facebook_id }, // Payload for the token
-      JWT_SECRET, // The secret key to sign the token
-      { expiresIn: "1h" } // Set the token expiration time to 1 hour
+      { userId: loggedInUser.id, facebookId: facebookUser.facebook_id },
+      JWT_SECRET,
+      { expiresIn: "1h" }
     );
 
-    // Step 5: Return the token in the response
     return NextResponse.json({ token }, { status: 200 });
   } catch (error) {
     if (error instanceof Error) {

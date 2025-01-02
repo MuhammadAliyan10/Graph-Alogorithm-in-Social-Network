@@ -51,7 +51,7 @@ const HomePage: React.FC = () => {
             <div className="flex items-center gap-x-4">
               <Check className="text-green-500 w-6 h-6" />
               <p className="text-green-500 text-lg font-medium">
-                You are successfully connected to Facebook.
+                You are connected to Facebook.
               </p>
             </div>
             <Separator className="my-6" />
