@@ -3,6 +3,7 @@
 import { initFacebookSDK } from "@/app/(main)/action";
 import { useEffect, useState } from "react";
 import LoadingButton from "./LoadingButton";
+import { getFacebookTokenExpiry } from "@/utils/facebook";
 
 const LoginFacebook: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -25,7 +26,6 @@ const LoginFacebook: React.FC = () => {
 
     try {
       setIsLoading(true);
-
       await new Promise<void>((resolve, reject) => {
         window.FB.login(
           (response: any) => {
@@ -37,11 +37,7 @@ const LoginFacebook: React.FC = () => {
                 { fields: "id,name,email", access_token: accessToken },
                 (userResponse: any) => {
                   if (userResponse && userResponse.id && userResponse.email) {
-                    handleTokenGeneration(
-                      userResponse.id,
-                      userResponse.name,
-                      userResponse.email
-                    );
+                    handleTokenGeneration(userResponse.id, accessToken);
                     resolve();
                   } else {
                     console.error("Failed to fetch Facebook user details.");
@@ -72,17 +68,17 @@ const LoginFacebook: React.FC = () => {
   };
 
   const handleTokenGeneration = async (
-    facebook_id: string,
-    name: string,
-    email: string | null
+    accessToken: string,
+    facebook_id: string
   ) => {
     try {
+      const { expiresAt } = await getFacebookTokenExpiry(accessToken);
       const res = await fetch("/api/auth/facebook/token", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ facebook_id, name, email }),
+        body: JSON.stringify({ accessToken, facebook_id, expiresAt }),
       });
 
       const data = await res.json();

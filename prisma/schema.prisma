@@ -8,12 +8,7 @@ generator client {
 }
 
 enum Provider {
-  MANUAL
-  GOOGLE
   FACEBOOK
-  X
-  INSTAGRAM
-  LINKEDIN
 }
 
 model User {
@@ -26,10 +21,11 @@ model User {
   profilePic    String?
   createdAt     DateTime     @default(now())
   sessions      Session[]
-  provider      Provider     @default(MANUAL)
+  provider      Provider     @default(FACEBOOK)
   providerId    String?      @unique
   socialLinks   Json?
-  facebookUser  FacebookUser? 
+  accessToken   String?
+  tokenExpiry   DateTime?
 }
 
 model Session {
@@ -39,34 +35,4 @@ model Session {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("sessions")
-}
-
-model FacebookUser {
-  id                Int      @id @default(autoincrement())
-  facebook_id       String   @unique
-  name              String
-  first_name        String?
-  last_name         String?
-  email             String?
-  gender            String?
-  birthday          DateTime?
-  location          String?
-  hometown          String?
-  profile_picture   String?
-  link              String?
-  cover             String?
-  about             String?
-  relationship_status String?
-  work              Json?
-  education         Json?
-  posts             Json?
-  likes             Json?
-  friends           Json?
-  created_at        DateTime @default(now())
-  updated_at        DateTime @updatedAt
-
-  userId            String  @unique
-  user              User    @relation(fields: [userId], references: [id])
-
-  @@map("facebook_users")
 }

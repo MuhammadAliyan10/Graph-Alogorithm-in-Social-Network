@@ -7,11 +7,13 @@ const JWT_SECRET = process.env.JWT_SECRET || "your_secret_key";
 
 export async function POST(request: Request) {
   try {
+    // Validate the logged-in user
     const { user: loggedInUser } = await validateRequest();
     if (!loggedInUser) {
       return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
     }
 
+    // Parse and validate the request body
     const body = await request.json().catch(() => null);
     if (!body) {
       return NextResponse.json(
@@ -20,64 +22,55 @@ export async function POST(request: Request) {
       );
     }
 
-    const { facebook_id, name, email } = body;
-
-    if (!facebook_id) {
+    const { facebook_id, accessToken, tokenExpiry } = body;
+    if (!facebook_id || !accessToken || !tokenExpiry) {
       return NextResponse.json(
-        { message: "facebook_id is required" },
+        {
+          message: "facebook_id, accessToken, and tokenExpiry are required",
+        },
         { status: 400 }
       );
     }
 
+    // Fetch the user from the database
     const user = await prisma.user.findUnique({
       where: { id: loggedInUser.id },
     });
-
     if (!user) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
 
-    if (user.providerId !== facebook_id) {
+    const currentTime = new Date();
+    const expiryTime = new Date(tokenExpiry);
+
+    if (
+      user.providerId !== facebook_id ||
+      !user.accessToken ||
+      expiryTime <= currentTime
+    ) {
       await prisma.user.update({
         where: { id: loggedInUser.id },
         data: {
           providerId: facebook_id,
-        },
-      });
-    }
-
-    let facebookUser = await prisma.facebookUser.findUnique({
-      where: { facebook_id },
-    });
-
-    if (!facebookUser) {
-      facebookUser = await prisma.facebookUser.create({
-        data: {
-          facebook_id: facebook_id,
-          name: name || "Unknown User",
-          email: email || null,
-          userId: loggedInUser.id,
+          accessToken,
+          tokenExpiry: expiryTime,
         },
       });
     }
 
     const token = jwt.sign(
-      { userId: loggedInUser.id, facebookId: facebookUser.facebook_id },
+      { userId: loggedInUser.id, facebookId: facebook_id },
       JWT_SECRET,
       { expiresIn: "1h" }
     );
 
     return NextResponse.json({ token }, { status: 200 });
   } catch (error) {
-    if (error instanceof Error) {
-      console.error("Error generating token:", error.message);
-    } else {
-      console.error("Unknown error:", error);
-    }
+    console.error("Error:", error instanceof Error ? error.message : error);
 
     return NextResponse.json(
       {
-        message: "Failed to generate token",
+        message: "Failed to process request",
         error: error instanceof Error ? error.message : "Unknown error",
       },
       { status: 500 }
