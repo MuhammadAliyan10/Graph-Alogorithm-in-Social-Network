@@ -29,7 +29,7 @@ model User {
   provider      Provider     @default(MANUAL)
   providerId    String?      @unique
   socialLinks   Json?
-  facebookUser  FacebookUser?
+  facebookUser  FacebookUser? 
 }
 
 model Session {
@@ -65,7 +65,8 @@ model FacebookUser {
   created_at        DateTime @default(now())
   updated_at        DateTime @updatedAt
 
-  user              User?    @relation(fields: [facebook_id], references: [providerId])
+  userId            String  @unique
+  user              User    @relation(fields: [userId], references: [id])
 
   @@map("facebook_users")
 }

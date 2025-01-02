@@ -19,24 +19,45 @@ const LoginFacebook: React.FC = () => {
   const handleLogin = async () => {
     if (!window.FB) {
       console.error("Facebook SDK not initialized.");
+      setErrorMessage("Facebook SDK is not initialized.");
       return;
     }
 
     try {
       setIsLoading(true);
+
       await new Promise<void>((resolve, reject) => {
         window.FB.login(
           (response: any) => {
             if (response.authResponse) {
               const accessToken = response.authResponse.accessToken;
-              handleTokenGeneration(accessToken);
-              resolve();
+
+              window.FB.api(
+                "/me",
+                { fields: "id,name,email", access_token: accessToken },
+                (userResponse: any) => {
+                  if (userResponse && userResponse.id && userResponse.email) {
+                    handleTokenGeneration(
+                      userResponse.id,
+                      userResponse.name,
+                      userResponse.email
+                    );
+                    resolve();
+                  } else {
+                    console.error("Failed to fetch Facebook user details.");
+                    setErrorMessage("Failed to fetch Facebook user details.");
+                    reject(new Error("Failed to fetch Facebook user details."));
+                  }
+                }
+              );
             } else {
               console.error("User cancelled login or did not fully authorize.");
               setErrorMessage(
                 "User cancelled login or did not fully authorize."
               );
-              reject();
+              reject(
+                new Error("User cancelled login or did not fully authorize.")
+              );
             }
           },
           { scope: "public_profile" }
@@ -50,14 +71,18 @@ const LoginFacebook: React.FC = () => {
     }
   };
 
-  const handleTokenGeneration = async (facebookToken: string) => {
+  const handleTokenGeneration = async (
+    facebook_id: string,
+    name: string,
+    email: string | null
+  ) => {
     try {
       const res = await fetch("/api/auth/facebook/token", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ facebookToken }),
+        body: JSON.stringify({ facebook_id, name, email }),
       });
 
       const data = await res.json();
@@ -65,10 +90,14 @@ const LoginFacebook: React.FC = () => {
       if (res.ok && data.token) {
         localStorage.setItem("authToken", data.token);
       } else {
+        console.error(
+          "Failed to generate token:",
+          data.message || "Unknown error"
+        );
         setErrorMessage("Failed to generate token.");
       }
     } catch (error) {
-      console.error("Error while generating token:", error);
+      console.log("Error while generating token:", error);
       setErrorMessage("Error generating token.");
     }
   };
