@@ -84,7 +84,7 @@ const Page = () => {
             </p>
 
             <Button className="rounder-sm lg:rounded-xl py-4 lg:py-6 px-4 lg:px-6 text-sm lg:text-1xl">
-              Get Started for free
+              <Link href={"/signup"}>Get Started for free</Link>
             </Button>
           </div>
         </section>
@@ -139,24 +139,6 @@ const Page = () => {
           </ul>
         </section>
 
-        {/* Evolution Section */}
-        <section className="mx-8 snap-start h-screen flex flex-col justify-center">
-          {/* <h2 className="text-3xl font-bold text-start my-8">
-            The Evolution of Social Network Graph Visualization
-          </h2> */}
-          <div className="flex justify-center items-center">
-            <div>
-              <Image src={Evolution} alt="Evolution" />
-            </div>
-            {/* <div>
-              <h3 className="text-muted-foreground italic text-1xl leading-8">
-                Over time, social networks have evolved into complex and
-                interconnected ecosystems...
-              </h3>
-            </div> */}
-          </div>
-        </section>
-
         {/* Explanation Section */}
         <section className="bg-background py-16 px-6 snap-start h-screen flex flex-col justify-center">
           <div className="max-w-4xl mx-auto">
@@ -204,7 +186,10 @@ const Page = () => {
             <p className="text-lg text-muted-foreground mb-6">
               Ready to dive deeper into the world of network analysis...
             </p>
-            <Button className="px-8 py-4 text-lg">Start Exploring</Button>
+            <Button className="px-8 py-4 text-lg">
+              {" "}
+              <Link href={"/signup"}>Start Exploring</Link>
+            </Button>
           </div>
         </section>
 
