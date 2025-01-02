@@ -9,11 +9,20 @@ import { Separator } from "@/components/ui/separator";
 const HomePage: React.FC = () => {
   const [isLogIn, setIsLogIn] = useState(false);
 
-  useEffect(() => {
+  const checkAuthToken = () => {
     const authToken = localStorage.getItem("authToken");
-    if (authToken) {
-      setIsLogIn(true);
-    }
+    setIsLogIn(!!authToken);
+  };
+
+  useEffect(() => {
+    checkAuthToken();
+    const handleStorageChange = () => {
+      checkAuthToken();
+    };
+    window.addEventListener("storage", handleStorageChange);
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
   }, []);
 
   return (
