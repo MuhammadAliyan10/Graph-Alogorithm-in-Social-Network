@@ -9,6 +9,7 @@ import {
   Settings,
   LogOut,
   Network,
+  LockKeyhole,
 } from "lucide-react";
 import { logout } from "@/app/(auth)/actions";
 
@@ -45,9 +46,9 @@ const applicationItems = [
     icon: Network,
   },
   {
-    title: "About",
-    url: "/about",
-    icon: Info,
+    title: "Privacy Policy",
+    url: "/privacy",
+    icon: LockKeyhole,
   },
 ];
 

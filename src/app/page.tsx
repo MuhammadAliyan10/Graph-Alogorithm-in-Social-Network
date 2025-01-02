@@ -1,9 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import graphImage from "../assets/Main/Graph.gif";
-import Evolution from "../assets/Main/Evolution.png";
+
 import {
   Accordion,
   AccordionContent,
@@ -25,8 +24,15 @@ import {
   Settings2,
   Workflow,
 } from "lucide-react";
+import { redirect } from "next/navigation";
 
 const Page = () => {
+  useEffect(() => {
+    const authToken = localStorage.getItem("authToken");
+    if (authToken) {
+      redirect("/home");
+    }
+  }, []);
   return (
     <>
       <div className="snap-y snap-mandatory h-screen overflow-y-scroll">
