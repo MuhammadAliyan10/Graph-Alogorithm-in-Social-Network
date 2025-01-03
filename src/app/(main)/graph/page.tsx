@@ -92,7 +92,7 @@ export default function GraphPage() {
   };
 
   return (
-    <div className="container my-10">
+    <div className="m-10">
       <h5 className="text-muted-foreground text-4xl mb-4 font-bold">Graph</h5>
 
       <Card>

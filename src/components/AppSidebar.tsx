@@ -1,202 +1,183 @@
 "use client";
+import React, { useState } from "react";
+import { Sidebar, SidebarBody, SidebarLink } from "@/components/Sidebar";
 import {
-  ChartScatter,
-  Users,
-  UserPlus,
-  MessageSquare,
-  Home,
-  Info,
-  Settings,
-  LogOut,
-  Network,
-  LockKeyhole,
-} from "lucide-react";
-import { logout } from "@/app/(auth)/actions";
-
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarSeparator,
-} from "@/components/ui/sidebar";
+  IconClipboard,
+  IconCurrencyDollar,
+  IconFriends,
+  IconGraph,
+  IconHelp,
+  IconHomeFilled,
+  IconLockSquare,
+  IconLogout2,
+  IconPencil,
+  IconSettings,
+  IconUser,
+  IconUserBolt,
+} from "@tabler/icons-react";
 import Link from "next/link";
+import { motion } from "framer-motion";
+import Image from "next/image";
+import { cn } from "@/lib/utils";
 
-// Application menu items.
-const applicationItems = [
-  {
-    title: "Home",
-    url: "/home",
-    icon: Home,
-  },
-  {
-    title: "Social Graph",
-    url: "/graph",
-    icon: ChartScatter,
-  },
-  {
-    title: "Network Evolution",
-    url: "/networkEvolution",
-    icon: Network,
-  },
-  {
-    title: "Privacy Policy",
-    url: "/privacy",
-    icon: LockKeyhole,
-  },
-];
+export function AppSidebar({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
+  const links = [
+    {
+      label: "Home",
+      href: "/home",
+      icon: (
+        <IconHomeFilled className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      ),
+    },
+    {
+      label: "About",
+      href: "#",
+      icon: (
+        <IconPencil className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      ),
+    },
+    {
+      label: "Social Graph",
+      href: "/graph",
+      icon: (
+        <IconGraph className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      ),
+    },
+    {
+      label: "Friend Suggestions",
+      href: "/networkEvolution",
+      icon: (
+        <IconFriends className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      ),
+    },
+    {
+      label: "Your Friends",
+      href: "#",
+      icon: (
+        <IconUser className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      ),
+    },
 
-// Social menu items.
-const socialItems = [
-  {
-    title: "Friends",
-    url: "/friends",
-    icon: Users,
-  },
-  {
-    title: "Add Friends",
-    url: "/add-friends",
-    icon: UserPlus,
-  },
-  {
-    title: "Messages",
-    url: "/messages",
-    icon: MessageSquare,
-  },
-];
+    {
+      label: "Terms & Conditions",
+      href: "#",
+      icon: (
+        <IconClipboard className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      ),
+    },
 
-// User menu items.
-const userItems = [
-  {
-    title: "Profile",
-    url: "/profile",
-    icon: Users,
-  },
-  {
-    title: "Settings",
-    url: "/settings",
-    icon: Settings,
-  },
-  {
-    title: "Logout",
-    url: "/logout",
-    icon: LogOut,
-  },
-];
-
-// Logout handler
-
-export function AppSidebar() {
-  const logoutUser = async () => {
-    try {
-      await logout();
-    } catch (error) {
-      console.error("Logout failed", error);
-    }
-  };
+    {
+      label: "Privacy & Security",
+      href: "#",
+      icon: (
+        <IconLockSquare className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      ),
+    },
+    {
+      label: "Help",
+      href: "#",
+      icon: (
+        <IconHelp className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      ),
+    },
+    {
+      label: "Profile",
+      href: "#",
+      icon: (
+        <IconUserBolt className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      ),
+    },
+    {
+      label: "Settings",
+      href: "#",
+      icon: (
+        <IconSettings className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      ),
+    },
+    {
+      label: "Current Plan",
+      href: "#",
+      icon: (
+        <IconCurrencyDollar className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      ),
+    },
+    {
+      label: "Logout",
+      href: "#",
+      icon: (
+        <IconLogout2 className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      ),
+    },
+  ];
+  const [open, setOpen] = useState(false);
   return (
-    <Sidebar>
-      <div className="flex flex-col h-full">
-        {/* Sidebar Header */}
-        <SidebarHeader className="text-lg font-semibold p-4 text-muted-foreground">
-          NetWiz
-        </SidebarHeader>
-        <SidebarSeparator />
-
-        {/* Sidebar Content */}
-        <SidebarContent className="flex-grow p-2 space-y-6">
-          {/* Application Group */}
-          <SidebarGroup>
-            <SidebarGroupLabel>Application</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {applicationItems.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild>
-                      <Link
-                        href={item.url}
-                        className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-700"
-                      >
-                        <item.icon className="w-5 h-5" />
-                        <span className="text-sm">{item.title}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-
-          <SidebarSeparator />
-
-          <SidebarGroup>
-            <SidebarGroupLabel>Social</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {socialItems.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild>
-                      <Link
-                        href={item.url}
-                        className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-700"
-                      >
-                        <item.icon className="w-5 h-5" />
-                        <span className="text-sm">{item.title}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-
-          <SidebarSeparator />
-
-          {/* User Group */}
-          <SidebarGroup>
-            <SidebarGroupLabel>User</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {userItems.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild>
-                      {item.title === "Logout" ? (
-                        <div
-                          onClick={logoutUser}
-                          className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-700 cursor-pointer"
-                        >
-                          <item.icon className="w-5 h-5" />
-                          <span className="text-sm">{item.title}</span>
-                        </div>
-                      ) : (
-                        <Link
-                          href={item.url}
-                          className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-700"
-                        >
-                          <item.icon className="w-5 h-5" />
-                          <span className="text-sm">{item.title}</span>
-                        </Link>
-                      )}
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        </SidebarContent>
-        <SidebarSeparator />
-
-        {/* Sidebar Footer */}
-        <SidebarFooter className="text-center text-xs text-muted-foreground p-2">
-          © 2024 NetWiz
-        </SidebarFooter>
-      </div>
-    </Sidebar>
+    <div
+      className={cn(
+        "rounded-md flex flex-col md:flex-row w-full flex-1 max-w-full mx-auto ",
+        "h-full" // for your use case, use `h-screen` instead of `h-[60vh]`
+      )}
+    >
+      <Sidebar open={open} setOpen={setOpen}>
+        <SidebarBody className="justify-between gap-10">
+          <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
+            {open ? <Logo /> : <LogoIcon />}
+            <div className="mt-8 flex flex-col gap-2">
+              {links.map((link, idx) => (
+                <SidebarLink key={idx} link={link} />
+              ))}
+            </div>
+          </div>
+          <div>
+            <SidebarLink
+              link={{
+                label: "Manu Arora",
+                href: "#",
+                icon: (
+                  <Image
+                    src="https://assets.aceternity.com/manu.png"
+                    className="h-7 w-7 flex-shrink-0 rounded-full"
+                    width={50}
+                    height={50}
+                    alt="Avatar"
+                  />
+                ),
+              }}
+            />
+          </div>
+        </SidebarBody>
+      </Sidebar>
+      {children}
+    </div>
   );
 }
+export const Logo = () => {
+  return (
+    <Link
+      href="#"
+      className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
+    >
+      <div className="h-5 w-6 bg-black dark:bg-white rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm flex-shrink-0" />
+      <motion.span
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="font-medium text-black dark:text-white whitespace-pre"
+      >
+        netWiz
+      </motion.span>
+    </Link>
+  );
+};
+export const LogoIcon = () => {
+  return (
+    <Link
+      href="#"
+      className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
+    >
+      <div className="h-5 w-6 bg-black dark:bg-white rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm flex-shrink-0" />
+    </Link>
+  );
+};
+
+// Dummy dashboard component with content
