@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { validateRequest } from "@/auth";
 
-export async function POST(request: Request) {
+export async function GET(request: Request) {
   try {
     const { user: loggedInUser } = await validateRequest();
 
