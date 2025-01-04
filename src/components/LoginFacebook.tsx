@@ -67,8 +67,8 @@ const LoginFacebook: React.FC = () => {
   };
 
   const handleTokenGeneration = async (
-    accessToken: string,
-    facebook_id: string
+    facebook_id: string,
+    accessToken: string
   ) => {
     try {
       const { expiresAt: tokenExpiry } = await getFacebookTokenExpiry(

@@ -2,11 +2,12 @@ const APP_ID = process.env.NEXT_PUBLIC_FACEBOOK_APP_ID || "";
 const APP_SECRET = process.env.FACEBOOK_APP_SECRET || "";
 
 /**
- * Fetches the expiration time and validity of a Facebook access token.
- * @param userAccessToken - The user's access token to inspect.
- * @returns The expiration date and validity status.
+
+ * @param userAccessToken
+ * @returns 
  */
 export async function getFacebookTokenExpiry(userAccessToken: string) {
+  console.log(userAccessToken);
   const appAccessToken = `${APP_ID}|${APP_SECRET}`;
   const url = `https://graph.facebook.com/debug_token?input_token=${userAccessToken}&access_token=${appAccessToken}`;
 
