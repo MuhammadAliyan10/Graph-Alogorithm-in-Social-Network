@@ -20,6 +20,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { logout } from "@/app/(auth)/actions";
+import { validateRequest } from "@/auth";
 
 export function AppSidebar({
   children,
@@ -55,7 +56,7 @@ export function AppSidebar({
     },
     {
       label: "Your Friends",
-      href: "#",
+      href: "/friends",
       icon: (
         <IconUser className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
@@ -63,7 +64,7 @@ export function AppSidebar({
 
     {
       label: "Terms & Conditions",
-      href: "#",
+      href: "/terms",
       icon: (
         <IconClipboard className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
@@ -71,35 +72,35 @@ export function AppSidebar({
 
     {
       label: "Privacy & Security",
-      href: "#",
+      href: "/privacy",
       icon: (
         <IconLockSquare className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
     },
     {
       label: "Help",
-      href: "#",
+      href: "/help",
       icon: (
         <IconHelp className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
     },
     {
       label: "Profile",
-      href: "#",
+      href: "/profile",
       icon: (
         <IconUserBolt className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
     },
     {
       label: "Settings",
-      href: "#",
+      href: "/setting",
       icon: (
         <IconSettings className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
     },
     {
       label: "Current Plan",
-      href: "#",
+      href: "/plan",
       icon: (
         <IconCurrencyDollar className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
@@ -114,6 +115,7 @@ export function AppSidebar({
     },
   ];
   const [open, setOpen] = useState(false);
+
   return (
     <div
       className={cn(
@@ -130,23 +132,6 @@ export function AppSidebar({
                 <SidebarLink key={idx} link={link} />
               ))}
             </div>
-          </div>
-          <div>
-            <SidebarLink
-              link={{
-                label: "Manu Arora",
-                href: "#",
-                icon: (
-                  <Image
-                    src="https://assets.aceternity.com/manu.png"
-                    className="h-7 w-7 flex-shrink-0 rounded-full"
-                    width={50}
-                    height={50}
-                    alt="Avatar"
-                  />
-                ),
-              }}
-            />
           </div>
         </SidebarBody>
       </Sidebar>

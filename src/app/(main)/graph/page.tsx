@@ -22,6 +22,7 @@ const ReactFlow = dynamic(
 import "reactflow/dist/style.css";
 import { Label } from "@/components/ui/label";
 import { DialogClose } from "@radix-ui/react-dialog";
+import ShinyText from "@/components/Animated/ShinyText";
 
 export default function GraphPage() {
   const [nodes, setNodes] = useState([
@@ -92,8 +93,13 @@ export default function GraphPage() {
   };
 
   return (
-    <div className="m-10">
-      <h5 className="text-muted-foreground text-4xl mb-4 font-bold">Graph</h5>
+    <div className="container mx-auto my-10">
+      <ShinyText
+        text="Social Graph"
+        className="text-4xl md:text-5xl font-bold mb-4"
+        disabled={false}
+        speed={3}
+      />
 
       <Card>
         <CardHeader>

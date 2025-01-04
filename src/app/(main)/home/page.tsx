@@ -72,7 +72,7 @@ const HomePage: React.FC = () => {
     return () => {
       window.removeEventListener("storage", handleStorageChange);
     };
-  }, [accessToken]);
+  }, []);
 
   return (
     <div className="m-10">

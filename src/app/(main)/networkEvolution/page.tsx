@@ -13,6 +13,7 @@ import {
 } from "reactflow";
 import "reactflow/dist/style.css";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import ShinyText from "@/components/Animated/ShinyText";
 
 // User type for our mock users
 interface User {
@@ -164,71 +165,81 @@ const Page: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen container my-8 ">
-      <div className="w-full lg:w-1/5 p-2 ">
-        <div className="text-xl font-semibold my-6">Network Evolution</div>
-        <div>
-          <h4 className="text-lg font-medium mb-4 text-muted-foreground">
-            Users
-          </h4>
-          <ul className="space-y-4">
-            {users.map((user) => (
-              <li
-                key={user.id}
-                className="p-3 bg-muted shadow-md hover:bg-gray-100 cursor-pointer transition-all duration-300 text-muted-foreground"
-                onClick={() => handleUserClick(user.id)}
-              >
-                {user.name}
-              </li>
-            ))}
-          </ul>
-        </div>
-        {selectedUser && (
-          <div className="mt-8">
-            <h4 className="text-lg font-medium mb-4 ">Selected User</h4>
-            <div className="p-4 bg-white rounded-xl shadow-md">
-              <p className="text-sm text-gray-700">
-                <strong>Name:</strong> {selectedUser.name}
-              </p>
-              <p className="text-sm text-gray-700">
-                <strong>Interests:</strong> {selectedUser.interests.join(", ")}
-              </p>
-            </div>
+    <div className="container my-8 mx-1 md:mx-auto">
+      <ShinyText
+        text="Network Evolution"
+        className="text-4xl md:text-5xl font-bold mb-4"
+        disabled={false}
+        speed={3}
+      />
+      <div className="flex flex-col lg:flex-row min-h-screen">
+        <div className="w-full lg:w-1/5 p-2 ">
+          <div>
+            <h4 className="text-lg font-medium mb-4 text-muted-foreground">
+              Users
+            </h4>
+            <ul className="space-y-4">
+              {users.map((user) => (
+                <li
+                  key={user.id}
+                  className="p-3 bg-muted shadow-md hover:bg-gray-100 cursor-pointer transition-all duration-300 text-muted-foreground"
+                  onClick={() => handleUserClick(user.id)}
+                >
+                  {user.name}
+                </li>
+              ))}
+            </ul>
           </div>
-        )}
-      </div>
+          {selectedUser && (
+            <div className="mt-8">
+              <h4 className="text-lg font-medium mb-4 ">Selected User</h4>
+              <div className="p-4 bg-white rounded-xl shadow-md">
+                <p className="text-sm text-gray-700">
+                  <strong>Name:</strong> {selectedUser.name}
+                </p>
+                <p className="text-sm text-gray-700">
+                  <strong>Interests:</strong>{" "}
+                  {selectedUser.interests.join(", ")}
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
 
-      <div className="flex-1 h-full p-6">
-        <Card className="h-full shadow-xl">
-          <CardHeader>
-            <div className="text-xl font-semibold">User Network</div>
-          </CardHeader>
-          <CardContent className="h-full">
-            <ReactFlow
-              nodes={nodes.map((node) => ({
-                ...node,
-                data: {
-                  label: (
-                    <Card className="p-2">
-                      <CardHeader>
-                        <div className="font-semibold text-md">
-                          {node.data.label}
-                        </div>
-                      </CardHeader>
-                    </Card>
-                  ),
-                },
-              }))}
-              edges={edges}
-              onNodesChange={(changes) =>
-                setNodes((nds) => applyNodeChanges(changes, nds))
-              }
-              onEdgesChange={onEdgesChange}
-              onConnect={onConnect}
-              fitView
-            />
-          </CardContent>
-        </Card>
+        <div className="flex-1  p-6">
+          <Card className=" w-full shadow-xl">
+            <CardHeader>
+              <div className="text-xl font-semibold">User Network</div>
+            </CardHeader>
+            <CardContent>
+              <div style={{ width: "100%", height: "500px" }}>
+                <ReactFlow
+                  nodes={nodes.map((node) => ({
+                    ...node,
+                    data: {
+                      label: (
+                        <Card className="p-2">
+                          <CardHeader>
+                            <div className="font-semibold text-md">
+                              {node.data.label}
+                            </div>
+                          </CardHeader>
+                        </Card>
+                      ),
+                    },
+                  }))}
+                  edges={edges}
+                  onNodesChange={(changes) =>
+                    setNodes((nds) => applyNodeChanges(changes, nds))
+                  }
+                  onEdgesChange={onEdgesChange}
+                  onConnect={onConnect}
+                  fitView
+                />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );
