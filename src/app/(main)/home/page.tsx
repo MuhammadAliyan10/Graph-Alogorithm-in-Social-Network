@@ -3,38 +3,81 @@
 import React, { useEffect, useState } from "react";
 import ShinyText from "@/components/Animated/ShinyText";
 import LoginFacebook from "@/components/LoginFacebook";
-import { Check, Facebook } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
+import { Check } from "lucide-react";
 
 const HomePage: React.FC = () => {
   const [isLogIn, setIsLogIn] = useState(false);
+  const [accessToken, setAccessToken] = useState<string>("");
+  const [userName, setUserName] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const checkAuthToken = () => {
-    const authToken = localStorage.getItem("authToken");
+    const cookies = document.cookie.split("; ");
+    const authToken = cookies.find((cookie) => cookie.startsWith("authToken="));
     setIsLogIn(!!authToken);
   };
 
+  const getAccessToken = async () => {
+    try {
+      const response = await fetch("/api/auth/facebook/getToken", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch access token");
+      }
+
+      const data = await response.json();
+      setAccessToken(data.accessToken);
+    } catch (error) {
+      console.error("Error fetching access token:", error);
+      setError("Error fetching access token");
+    }
+  };
+
+  // Fetch user info from Facebook using the access token
+  const fetchFacebookUserInfo = async (accessToken: string) => {
+    try {
+      const response = await fetch(
+        `https://graph.facebook.com/me?fields=id,name&access_token=${accessToken}`
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch user info from Facebook");
+      }
+
+      const userData = await response.json();
+      setUserName(userData.name);
+    } catch (error) {
+      console.error("Error fetching user info from Facebook:", error);
+      setError("Error fetching user info from Facebook");
+    }
+  };
+
+  // Fetch access token and user info when the component is mounted
   useEffect(() => {
     checkAuthToken();
-    const handleStorageChange = () => {
-      checkAuthToken();
-    };
-    window.addEventListener("storage", handleStorageChange);
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
-  }, []);
+    getAccessToken();
+
+    // Fetch user info when access token is available
+    if (accessToken) {
+      fetchFacebookUserInfo(accessToken);
+    }
+  }, [accessToken]); // Depend on accessToken to trigger fetching user info
 
   return (
     <div className="m-10">
-      <div className="flex flex-col justify-center h-screen ">
+      <div className="flex flex-col justify-center h-screen">
         <ShinyText
           text="Welcome to NetWiz"
           className="text-4xl md:text-8xl font-bold mb-4"
           disabled={false}
           speed={3}
         />
-        <p className=" text-lg text-gray-600">
+        <p className="text-lg text-gray-600">
           Your trusted platform for connecting, sharing, and exploring. Stay
           connected with ease.
         </p>
@@ -57,9 +100,17 @@ const HomePage: React.FC = () => {
             <section className="my-4">
               <div className="flex items-center gap-x-4">
                 <Check className="text-green-500 w-6 h-6" />
-                <p className="text-green-500 text-lg font-medium">
-                  You are connected to Facebook.
-                </p>
+                {userName ? (
+                  <p className="text-green-500 text-lg font-medium">
+                    {userName}, You are connected to Facebook.
+                  </p>
+                ) : error ? (
+                  <p className="text-red-500 text-lg font-medium">{error}</p>
+                ) : (
+                  <p className="text-yellow-500 text-lg font-medium">
+                    Loading user info...
+                  </p>
+                )}
               </div>
             </section>
 
