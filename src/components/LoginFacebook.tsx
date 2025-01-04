@@ -71,14 +71,23 @@ const LoginFacebook: React.FC = () => {
     accessToken: string
   ) => {
     try {
-      const { expiresAt: tokenExpiry } = await getFacebookTokenExpiry(
+      // Get token expiry and validate token
+      const { expiresAt: tokenExpiry, isValid } = await getFacebookTokenExpiry(
         accessToken
       );
+
+      if (!isValid || !tokenExpiry) {
+        throw new Error("Invalid or expired access token.");
+      }
+
+      console.log(accessToken, facebook_id, tokenExpiry, isValid);
 
       const res = await fetch("/api/auth/facebook/token", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+
+          "X-CSRF-TOKEN": getCSRFToken() || "",
         },
         body: JSON.stringify({ accessToken, facebook_id, tokenExpiry }),
       });
@@ -86,7 +95,7 @@ const LoginFacebook: React.FC = () => {
       const data = await res.json();
 
       if (res.ok && data.token) {
-        localStorage.setItem("authToken", data.token);
+        document.cookie = `authToken=${data.token}; Secure; HttpOnly; Path=/; SameSite=Strict;`;
       } else {
         console.error(
           "Failed to generate token:",
@@ -98,6 +107,14 @@ const LoginFacebook: React.FC = () => {
       console.log("Error while generating token:", error);
       setErrorMessage("Error generating token.");
     }
+  };
+
+  const getCSRFToken = (): string | null => {
+    // Implement logic to retrieve CSRF token securely (from cookies, for example)
+    return document.cookie.replace(
+      /(?:(?:^|.*;\s*)csrf_token\s*=\s*([^;]*).*$)|^.*$/,
+      "$1"
+    );
   };
 
   return (

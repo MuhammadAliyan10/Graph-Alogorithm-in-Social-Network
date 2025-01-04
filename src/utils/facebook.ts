@@ -7,7 +7,6 @@ const APP_SECRET = process.env.FACEBOOK_APP_SECRET || "";
  * @returns 
  */
 export async function getFacebookTokenExpiry(userAccessToken: string) {
-  console.log(userAccessToken);
   const appAccessToken = `${APP_ID}|${APP_SECRET}`;
   const url = `https://graph.facebook.com/debug_token?input_token=${userAccessToken}&access_token=${appAccessToken}`;
 
