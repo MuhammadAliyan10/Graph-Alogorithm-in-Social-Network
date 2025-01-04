@@ -79,9 +79,6 @@ const LoginFacebook: React.FC = () => {
       if (!isValid || !tokenExpiry) {
         throw new Error("Invalid or expired access token.");
       }
-
-      console.log(accessToken, facebook_id, tokenExpiry, isValid);
-
       const res = await fetch("/api/auth/facebook/token", {
         method: "POST",
         headers: {
