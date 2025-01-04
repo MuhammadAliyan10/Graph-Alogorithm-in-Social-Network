@@ -39,9 +39,9 @@ const HomePage: React.FC = () => {
           connected with ease.
         </p>
 
-        {isLogIn ? (
+        {!isLogIn ? (
           <div>
-            <section className="my-2 text-center">
+            <section className="my-2">
               <p className="text-gray-700 text-lg">
                 To access your account and enjoy all the features of NetWiz, log
                 in with your Facebook account. It's quick, secure, and easy!

@@ -31,12 +31,11 @@ const LoginFacebook: React.FC = () => {
           (response: any) => {
             if (response.authResponse) {
               const accessToken = response.authResponse.accessToken;
-
               window.FB.api(
                 "/me",
-                { fields: "id,name,email", access_token: accessToken },
+                { fields: "id", access_token: accessToken },
                 (userResponse: any) => {
-                  if (userResponse && userResponse.id && userResponse.email) {
+                  if (userResponse && userResponse.id) {
                     handleTokenGeneration(userResponse.id, accessToken);
                     resolve();
                   } else {
@@ -72,13 +71,16 @@ const LoginFacebook: React.FC = () => {
     facebook_id: string
   ) => {
     try {
-      const { expiresAt } = await getFacebookTokenExpiry(accessToken);
+      const { expiresAt: tokenExpiry } = await getFacebookTokenExpiry(
+        accessToken
+      );
+
       const res = await fetch("/api/auth/facebook/token", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ accessToken, facebook_id, expiresAt }),
+        body: JSON.stringify({ accessToken, facebook_id, tokenExpiry }),
       });
 
       const data = await res.json();

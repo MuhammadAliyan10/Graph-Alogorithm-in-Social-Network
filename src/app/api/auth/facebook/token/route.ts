@@ -7,13 +7,11 @@ const JWT_SECRET = process.env.JWT_SECRET || "your_secret_key";
 
 export async function POST(request: Request) {
   try {
-    // Validate the logged-in user
     const { user: loggedInUser } = await validateRequest();
     if (!loggedInUser) {
       return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
     }
 
-    // Parse and validate the request body
     const body = await request.json().catch(() => null);
     if (!body) {
       return NextResponse.json(
