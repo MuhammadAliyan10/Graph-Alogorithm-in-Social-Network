@@ -6,9 +6,15 @@ import LoginFacebook from "@/components/LoginFacebook";
 import { Check } from "lucide-react";
 
 const HomePage: React.FC = () => {
+  const [isLogIn, setIsLogIn] = useState(false);
   const [accessToken, setAccessToken] = useState<string>("");
   const [userName, setUserName] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const checkAuthToken = () => {
+    const token = localStorage.getItem("authToken");
+    setIsLogIn(!!token);
+  };
 
   const getAccessToken = async () => {
     try {
@@ -50,13 +56,22 @@ const HomePage: React.FC = () => {
     }
   };
 
-  // Fetch access token and user info when the component is mounted
   useEffect(() => {
+    checkAuthToken();
     getAccessToken();
 
     if (accessToken) {
       fetchFacebookUserInfo(accessToken);
     }
+
+    const handleStorageChange = () => {
+      checkAuthToken();
+    };
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
   }, [accessToken]);
 
   return (
@@ -73,7 +88,7 @@ const HomePage: React.FC = () => {
           connected with ease.
         </p>
 
-        {!accessToken ? (
+        {!isLogIn ? (
           <div>
             <section className="my-2">
               <p className="text-gray-700 text-lg">

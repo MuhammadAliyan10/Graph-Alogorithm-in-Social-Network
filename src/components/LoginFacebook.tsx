@@ -91,7 +91,7 @@ const LoginFacebook: React.FC = () => {
       const data = await res.json();
 
       if (res.ok && data.token) {
-        document.cookie = `authToken=${data.token}; Secure; HttpOnly; Path=/; SameSite=Strict;`;
+        localStorage.setItem("authToken", data.token);
       } else {
         console.error(
           "Failed to generate token:",
