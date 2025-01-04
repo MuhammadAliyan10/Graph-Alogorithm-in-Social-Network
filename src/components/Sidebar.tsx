@@ -9,6 +9,7 @@ interface Links {
   label: string;
   href: string;
   icon: React.JSX.Element | React.ReactNode;
+  action?: () => void;
 }
 
 interface SidebarContextProps {
@@ -177,6 +178,7 @@ export const SidebarLink = ({
       {link.icon}
 
       <motion.span
+        onClick={link.label === "Logout" ? link.action : undefined}
         animate={{
           display: animate ? (open ? "inline-block" : "none") : "inline-block",
           opacity: animate ? (open ? 1 : 0) : 1,

@@ -83,7 +83,6 @@ const LoginFacebook: React.FC = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-
           "X-CSRF-TOKEN": getCSRFToken() || "",
         },
         body: JSON.stringify({ accessToken, facebook_id, tokenExpiry }),

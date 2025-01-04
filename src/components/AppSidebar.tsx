@@ -19,6 +19,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { logout } from "@/app/(auth)/actions";
 
 export function AppSidebar({
   children,
@@ -106,6 +107,7 @@ export function AppSidebar({
     {
       label: "Logout",
       href: "#",
+      action: logout,
       icon: (
         <IconLogout2 className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
