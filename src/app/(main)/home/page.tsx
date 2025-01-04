@@ -4,12 +4,15 @@ import React, { useEffect, useState } from "react";
 import ShinyText from "@/components/Animated/ShinyText";
 import LoginFacebook from "@/components/LoginFacebook";
 import { Check } from "lucide-react";
+import { useAuth } from "../AuthContext";
 
 const HomePage: React.FC = () => {
   const [isLogIn, setIsLogIn] = useState(false);
   const [accessToken, setAccessToken] = useState<string>("");
   const [userName, setUserName] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const { isTokenValid } = useAuth();
 
   const checkAuthToken = () => {
     const token = localStorage.getItem("authToken");
@@ -37,7 +40,6 @@ const HomePage: React.FC = () => {
     }
   };
 
-  // Fetch user info from Facebook using the access token
   const fetchFacebookUserInfo = async (accessToken: string) => {
     try {
       const response = await fetch(
@@ -88,7 +90,7 @@ const HomePage: React.FC = () => {
           connected with ease.
         </p>
 
-        {!isLogIn ? (
+        {!isLogIn && isTokenValid ? (
           <div>
             <section className="my-2">
               <p className="text-gray-700 text-lg">

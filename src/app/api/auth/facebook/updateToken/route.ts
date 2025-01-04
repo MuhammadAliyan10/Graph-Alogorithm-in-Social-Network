@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getFacebookTokenExpiry } from "@/utils/facebook";
-import { validateRequest } from "@/auth"; // Your authentication logic
+import { validateRequest } from "@/auth";
 
 export async function POST(request: Request) {
   try {

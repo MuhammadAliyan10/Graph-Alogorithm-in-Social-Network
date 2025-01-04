@@ -1,5 +1,6 @@
 "use client";
-import {
+
+import React, {
   createContext,
   useContext,
   useState,
@@ -10,12 +11,15 @@ import {
 interface AuthContextType {
   accessToken: string | null;
   setAccessToken: (token: string | null) => void;
+  isTokenValid: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [isTokenValid, setIsTokenValid] = useState<boolean>(true);
+
   const getAccessToken = async () => {
     try {
       const response = await fetch("/api/auth/facebook/getToken", {
@@ -36,12 +40,44 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const checkTokenValidity = async () => {
+    if (!accessToken) return;
+
+    try {
+      const response = await fetch("/api/auth/facebook/checkToken", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ accessToken }),
+      });
+
+      if (!response.ok) {
+        setIsTokenValid(false);
+        setAccessToken(null); // Clear the token
+        return;
+      }
+
+      const data = await response.json();
+      setIsTokenValid(true);
+    } catch (error) {
+      console.error("Error checking token validity:", error);
+      setIsTokenValid(false);
+      setAccessToken(null); // Clear the token
+    }
+  };
+
   useEffect(() => {
     getAccessToken();
-  }, []);
+
+    // Periodically check token validity every 5 minutes
+    const interval = setInterval(() => {
+      checkTokenValidity();
+    }, 5 * 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, [accessToken]);
 
   return (
-    <AuthContext.Provider value={{ accessToken, setAccessToken }}>
+    <AuthContext.Provider value={{ accessToken, setAccessToken, isTokenValid }}>
       {children}
     </AuthContext.Provider>
   );
