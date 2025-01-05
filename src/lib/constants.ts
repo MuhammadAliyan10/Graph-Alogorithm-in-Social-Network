@@ -12,17 +12,17 @@ export const products = [
   {
     title: "Moonbeam",
     link: "https://gomoonbeam.com",
-    thumbnail: "/p1.png",
+    thumbnail: "/MainHome.png",
   },
   {
     title: "Cursor",
     link: "https://cursor.so",
-    thumbnail: "/p2.png",
+    thumbnail: "/MainHome1.png",
   },
   {
     title: "Rogue",
     link: "https://userogue.com",
-    thumbnail: "/p3.png",
+    thumbnail: "/Profile.png",
   },
 
   {

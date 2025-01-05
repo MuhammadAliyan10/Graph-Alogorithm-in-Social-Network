@@ -61,6 +61,24 @@ const Page: React.FC = () => {
       position: { x: 250, y: 150 },
       type: "default",
     },
+    {
+      id: "4",
+      data: { label: "Shahzaib" },
+      position: { x: 300, y: 200 },
+      type: "default",
+    },
+    {
+      id: "5",
+      data: { label: "Noor" },
+      position: { x: 350, y: 250 },
+      type: "default",
+    },
+    {
+      id: "6",
+      data: { label: "Mohsin" },
+      position: { x: 400, y: 300 },
+      type: "default",
+    },
   ];
 
   const initialEdges: CustomEdge[] = [
@@ -78,12 +96,36 @@ const Page: React.FC = () => {
       label: "Friend",
       markerEnd: { type: MarkerType.ArrowClosed },
     },
+    {
+      id: "e1-4",
+      source: "1",
+      target: "4",
+      label: "Friend",
+      markerEnd: { type: MarkerType.ArrowClosed },
+    },
+    {
+      id: "e3-6",
+      source: "3",
+      target: "6",
+      label: "Friend",
+      markerEnd: { type: MarkerType.ArrowClosed },
+    },
+    {
+      id: "e2-5",
+      source: "2",
+      target: "5",
+      label: "Friend",
+      markerEnd: { type: MarkerType.ArrowClosed },
+    },
   ];
 
   const mockUsers: User[] = [
     { id: "1", name: "Muhammad Aliyan", interests: ["Football", "Coding"] },
     { id: "2", name: "Usama", interests: ["TikTok"] },
     { id: "3", name: "Zarar", interests: ["TikTok", "Gaming"] },
+    { id: "4", name: "Shahzaib", interests: ["Football", "Gaming"] },
+    { id: "5", name: "Noor", interests: ["TikTok", "Gaming"] },
+    { id: "6", name: "Mohsin", interests: ["TikTok", "Blogs"] },
   ];
 
   // React Flow State

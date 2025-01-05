@@ -189,7 +189,11 @@ const FacebookDataFetcher: React.FC = () => {
               <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
                 Cancel
               </Button>
-              <LoadingButton loading={isLoading} disabled={isSaveDisabled}>
+              <LoadingButton
+                loading={isLoading}
+                disabled={isSaveDisabled}
+                type="submit"
+              >
                 Save Changes
               </LoadingButton>
             </div>

@@ -56,7 +56,7 @@ const HomePage: React.FC = () => {
           connected with ease.
         </p>
 
-        {!accessToken || !isTokenValid ? (
+        {!accessToken ? (
           <div>
             <section className="my-2">
               <p className="text-gray-700 text-lg">
@@ -64,7 +64,6 @@ const HomePage: React.FC = () => {
                 in with your Facebook account. It's quick, secure, and easy!
               </p>
             </section>
-
             <div className="flex">
               <LoginFacebook />
             </div>
@@ -73,31 +72,17 @@ const HomePage: React.FC = () => {
           <>
             <section className="my-4 mx-4 md:mx-0">
               <div className="flex items-center gap-x-3">
-                {!isTokenValid ? (
-                  <>
-                    <X className="text-red-500 w-6 h-6" />
-                    <p className="text-red-600">
-                      Your token has been expired kindly login again.
-                    </p>
-                    <LoginFacebook />
-                  </>
+                <Check className="text-green-500 w-6 h-6" />
+                {userName ? (
+                  <p className="text-green-500 text-lg font-medium">
+                    {userName}, You are connected to Facebook.
+                  </p>
+                ) : error ? (
+                  <p className="text-red-500 text-lg font-medium">{error}</p>
                 ) : (
-                  <>
-                    <Check className="text-green-500 w-6 h-6" />
-                    {userName ? (
-                      <p className="text-green-500 text-lg font-medium">
-                        {userName}, You are connected to Facebook.
-                      </p>
-                    ) : error ? (
-                      <p className="text-red-500 text-lg font-medium">
-                        {error}
-                      </p>
-                    ) : (
-                      <p className="text-yellow-500 text-lg font-medium">
-                        Loading user info...
-                      </p>
-                    )}
-                  </>
+                  <p className="text-yellow-500 text-lg font-medium">
+                    Loading user info...
+                  </p>
                 )}
               </div>
             </section>
