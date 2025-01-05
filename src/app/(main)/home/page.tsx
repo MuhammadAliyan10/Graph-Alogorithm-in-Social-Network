@@ -56,7 +56,7 @@ const HomePage: React.FC = () => {
           connected with ease.
         </p>
 
-        {!isTokenValid ? (
+        {!accessToken || !isTokenValid ? (
           <div>
             <section className="my-2">
               <p className="text-gray-700 text-lg">
@@ -71,7 +71,7 @@ const HomePage: React.FC = () => {
           </div>
         ) : (
           <>
-            <section className="my-4">
+            <section className="my-4 mx-4 md:mx-0">
               <div className="flex items-center gap-x-3">
                 {!isTokenValid ? (
                   <>
