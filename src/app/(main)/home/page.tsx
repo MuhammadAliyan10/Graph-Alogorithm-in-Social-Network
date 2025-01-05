@@ -7,41 +7,22 @@ import { Check } from "lucide-react";
 import { useAuth } from "../AuthContext";
 
 const HomePage: React.FC = () => {
-  const [isLogIn, setIsLogIn] = useState(false);
-  const [accessToken, setAccessToken] = useState<string>("");
   const [userName, setUserName] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const { isTokenValid } = useAuth();
-  console.log(isTokenValid);
+  const { isTokenValid, accessToken } = useAuth();
 
-  const checkAuthToken = () => {
-    const token = localStorage.getItem("authToken");
-    setIsLogIn(!!token);
-  };
+  useEffect(() => {
+    const savedUserName = localStorage.getItem("facebookUserName");
 
-  const getAccessToken = async () => {
-    try {
-      const response = await fetch("/api/auth/facebook/getToken", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch access token");
-      }
-
-      const data = await response.json();
-      setAccessToken(data.accessToken);
-    } catch (error) {
-      console.error("Error fetching access token:", error);
-      setError("Error fetching access token");
+    if (savedUserName) {
+      setUserName(savedUserName);
+    } else if (isTokenValid) {
+      fetchFacebookUserInfo();
     }
-  };
+  }, [isTokenValid]);
 
-  const fetchFacebookUserInfo = async (accessToken: string) => {
+  const fetchFacebookUserInfo = async () => {
     try {
       const response = await fetch(
         `https://graph.facebook.com/me?fields=id,name&access_token=${accessToken}`
@@ -52,30 +33,14 @@ const HomePage: React.FC = () => {
       }
 
       const userData = await response.json();
+
+      localStorage.setItem("facebookUserName", userData.name);
       setUserName(userData.name);
     } catch (error) {
       console.error("Error fetching user info from Facebook:", error);
       setError("Error fetching user info from Facebook");
     }
   };
-
-  useEffect(() => {
-    checkAuthToken();
-    getAccessToken();
-
-    if (accessToken) {
-      fetchFacebookUserInfo(accessToken);
-    }
-
-    const handleStorageChange = () => {
-      checkAuthToken();
-    };
-    window.addEventListener("storage", handleStorageChange);
-
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
-  }, []);
 
   return (
     <div className="m-10">
@@ -91,7 +56,7 @@ const HomePage: React.FC = () => {
           connected with ease.
         </p>
 
-        {!isLogIn || !isTokenValid ? (
+        {!isTokenValid ? (
           <div>
             <section className="my-2">
               <p className="text-gray-700 text-lg">

@@ -21,7 +21,6 @@ const Page = () => {
       }
 
       const data = await response.json();
-      console.log(data);
 
       setUserData(data);
     } catch (error: any) {
@@ -37,7 +36,7 @@ const Page = () => {
   }, [accessToken]);
 
   return (
-    <div className="container mx-auto my-10">
+    <div className="container mx-2 md:mx-auto my-10">
       <ShinyText
         text="About Facebook User"
         className="text-4xl md:text-5xl font-bold mb-4"
@@ -62,7 +61,7 @@ const Page = () => {
                   <CardBody className="bg-gray-50 relative group/card  dark:hover:shadow-2xl dark:hover:shadow-neutral-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-full md:!w-full h-auto rounded-xl p-6 border">
                     <CardItem
                       translateZ="50"
-                      className="text-xl font-bold text-neutral-600 dark:text-white flex justify-between items-center gap-x-6 "
+                      className="text-xl font-bold text-neutral-600 dark:text-white flex flex-col md:justify-between items-center gap-x-6 "
                     >
                       <img
                         src={userData.picture.data.url}
@@ -70,7 +69,9 @@ const Page = () => {
                         className="w-32 h-32 rounded-full "
                       />
                       <div>
-                        <h2 className="text-6xl ">{userData.name}</h2>
+                        <h2 className="text-4xl md:text-6xl ">
+                          {userData.name}
+                        </h2>
                         <ul className="grid grid-cols-1 gap-y-2 mt-4">
                           <li>
                             Email |{" "}
