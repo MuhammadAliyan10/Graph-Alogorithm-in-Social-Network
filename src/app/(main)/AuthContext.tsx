@@ -24,9 +24,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       const response = await fetch("/api/auth/facebook/getToken", {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
       });
 
       if (!response.ok) {
@@ -34,47 +32,56 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
 
       const data = await response.json();
-      setAccessToken(data.accessToken);
+      const token = await data.accessToken;
+      setAccessToken(token);
+      setIsTokenValid(true);
     } catch (error) {
       console.error("Error fetching access token:", error);
+      setAccessToken(null);
+      setIsTokenValid(false);
     }
   };
 
   const checkTokenValidity = async () => {
-    if (!accessToken) return;
+    if (!accessToken) {
+      setIsTokenValid(false);
+    }
 
     try {
       const response = await fetch("/api/auth/facebook/checkToken", {
-        method: "POST",
+        method: "GET",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ accessToken }),
       });
 
-      if (!response.ok) {
-        setIsTokenValid(false);
-        setAccessToken(null); // Clear the token
-        return;
-      }
-
       const data = await response.json();
-      setIsTokenValid(true);
+      if (data.expired) {
+        console.warn("Access token has expired.");
+        setIsTokenValid(false);
+        setAccessToken(null);
+      } else {
+        setIsTokenValid(true);
+      }
     } catch (error) {
       console.error("Error checking token validity:", error);
       setIsTokenValid(false);
-      setAccessToken(null); // Clear the token
+      setAccessToken(null);
     }
   };
 
   useEffect(() => {
-    getAccessToken();
+    const initializeAuth = async () => {
+      await getAccessToken();
+      await checkTokenValidity();
+    };
 
-    // Periodically check token validity every 5 minutes
+    initializeAuth();
+
     const interval = setInterval(() => {
       checkTokenValidity();
     }, 5 * 60 * 1000);
 
     return () => clearInterval(interval);
-  }, [accessToken]);
+  }, []);
 
   return (
     <AuthContext.Provider value={{ accessToken, setAccessToken, isTokenValid }}>

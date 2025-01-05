@@ -13,6 +13,7 @@ const HomePage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   const { isTokenValid } = useAuth();
+  console.log(isTokenValid);
 
   const checkAuthToken = () => {
     const token = localStorage.getItem("authToken");
@@ -90,7 +91,7 @@ const HomePage: React.FC = () => {
           connected with ease.
         </p>
 
-        {!isLogIn && isTokenValid ? (
+        {!isLogIn || !isTokenValid ? (
           <div>
             <section className="my-2">
               <p className="text-gray-700 text-lg">
