@@ -1,19 +1,15 @@
-import ShinyText from "@/components/Animated/ShinyText";
 import React from "react";
 
 const PrivacyPolicyAndTerms = () => {
   return (
-    <div className="min-h-screen p-8">
+    <div className="min-h-screen bg-gray-50 text-gray-800 p-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <header className="mb-8">
-          <ShinyText
-            text="Privacy Policy & Terms of Service"
-            className="text-4xl md:text-5xl font-bold mb-4"
-            disabled={false}
-            speed={3}
-          />
-          <p className="text-muted-foreground mt-2">
+          <h1 className="text-3xl font-bold text-center">
+            Privacy Policy & Terms of Service
+          </h1>
+          <p className="text-center text-gray-600 mt-2">
             Effective Date: January 1, 2025
           </p>
         </header>
@@ -105,7 +101,7 @@ const PrivacyPolicyAndTerms = () => {
         </section>
 
         {/* Footer */}
-        <footer className="mt-12 border-t pt-4 ">
+        <footer className="mt-12 border-t pt-4">
           <p className="text-center text-sm text-gray-600">
             If you have any questions, please contact us at{" "}
             <a

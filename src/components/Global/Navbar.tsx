@@ -15,7 +15,7 @@ const Navbar = () => {
           </li>
 
           <li>
-            <Link href="#">Resources</Link>
+            <Link href="/privacy-policy">Privacy & Policy</Link>
           </li>
           <li>
             <Link href="#">Documentation</Link>
