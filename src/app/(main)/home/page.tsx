@@ -1,15 +1,15 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import ShinyText from "@/components/Animated/ShinyText";
 import LoginFacebook from "@/components/LoginFacebook";
 import { Check, Cross, X } from "lucide-react";
 import { useAuth } from "../AuthContext";
+import { Skeleton } from "@/components/ui/skeleton"; // Import Skeleton from ShadCN
 
 const HomePage: React.FC = () => {
   const [userName, setUserName] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-
   const { isTokenValid, accessToken } = useAuth();
 
   useEffect(() => {

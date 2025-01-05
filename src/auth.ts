@@ -17,9 +17,11 @@ export const lucia = new Lucia(adaptor, {
     return {
       id: databaseUserAttributes.id,
       username: databaseUserAttributes.username,
-      displayName: databaseUserAttributes.displayName,
-      avatarUrl: databaseUserAttributes.avatarUrl,
-      googleId: databaseUserAttributes.googleId,
+      bio: databaseUserAttributes.bio,
+      fullName: databaseUserAttributes.fullName,
+      email: databaseUserAttributes.email,
+      profilePic: databaseUserAttributes.profilePic,
+      createdAt: databaseUserAttributes.createdAt,
     };
   },
 });
@@ -34,9 +36,11 @@ declare module "lucia" {
 interface DatabaseUserAttributes {
   id: string;
   username: string;
-  displayName: string;
-  avatarUrl: string | null;
-  googleId: string | null;
+  fullName: string | null;
+  bio: string | null;
+  email: string;
+  profilePic: string | null;
+  createdAt: Date | null;
 }
 
 interface ExtendedSession extends Session {
@@ -82,9 +86,11 @@ export const validateRequest = cache(
         ? {
             id: result.user.id,
             username: result.user.username,
-            displayName: result.user.displayName,
-            avatarUrl: result.user.avatarUrl,
-            googleId: result.user.googleId,
+            bio: result.user.bio,
+            fullName: result.user.fullName,
+            email: result.user.email,
+            profilePic: result.user.profilePic,
+            createdAt: result.user.createdAt,
           }
         : null;
 
