@@ -1,19 +1,98 @@
 "use client";
 import { useAuth } from "@/app/(main)/AuthContext";
-import ShinyText from "@/components/Animated/ShinyText";
 import React, { useEffect, useState } from "react";
-import { CardBody, CardContainer, CardItem } from "@/components/Global/3d-card";
+import Image from "next/image";
+import { LampComponent } from "@/components/Global/lamp";
 import Link from "next/link";
+import { CardStack } from "@/components/card-stack";
+import { Highlight } from "@/components/Highlight";
+import { LoaderCircle } from "lucide-react";
 
 const Page = () => {
-  const { accessToken, isTokenValid } = useAuth();
+  const { accessToken } = useAuth();
   const [userData, setUserData] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const CARDS = [
+    {
+      id: 0,
+      name: isLoading ? "" : userData?.name,
+      designation: "About You",
+      content: (
+        <>
+          {isLoading ? (
+            "Loading..."
+          ) : (
+            <p>
+              Your name is <Highlight>{userData?.name}</Highlight>. Your short
+              name is <Highlight>{userData?.short_name}</Highlight>. Your age is{" "}
+              <Highlight>{userData?.age_range?.max}</Highlight>. You are{" "}
+              <Highlight>{userData?.gender}</Highlight>. Your birthday is{" "}
+              <Highlight>{userData?.birthday}</Highlight>. You have total{" "}
+              <Highlight>{userData?.posts?.data?.length}</Highlight>{" "}
+              {userData?.posts?.data?.length > 1 ? "posts" : "post"}.
+              <Highlight>{userData?.birthday}</Highlight>. You have total{" "}
+              <Highlight>{userData?.friends?.summary?.total_count}</Highlight>{" "}
+              {userData?.friends?.summary?.total_count > 1
+                ? "friends"
+                : "friend"}
+              .
+            </p>
+          )}
+        </>
+      ),
+    },
+    {
+      id: 1,
+      name: isLoading ? "" : userData?.name,
+      designation: "About Your Likes",
+      content: (
+        <>
+          {isLoading ? (
+            "Loading..."
+          ) : (
+            <p>
+              You liked total
+              <Highlight>{userData?.likes?.data?.length}</Highlight> pages
+              including <Highlight>{userData?.music?.data?.length}</Highlight>{" "}
+              music pages. Your total favorite teams are{" "}
+              <Highlight>{userData?.favorite_teams?.length}</Highlight> and
+              favorite athletes are{" "}
+              <Highlight>{userData?.favorite_athletes?.length}</Highlight>.
+            </p>
+          )}
+        </>
+      ),
+    },
+    {
+      id: 2,
+      name: isLoading ? "" : userData?.name,
+      designation: "Link to Account",
+      content: (
+        <>
+          {isLoading ? (
+            "Loading..."
+          ) : (
+            <p>
+              We have only the data we have permission and access to. If you
+              need to see more data about you, kindly{" "}
+              <a target={"_blank"} href={userData?.link}>
+                <Highlight>click here</Highlight>
+              </a>{" "}
+              to access your account.
+            </p>
+          )}
+        </>
+      ),
+    },
+  ];
 
   const fetchFacebookUserInfo = async (accessToken: string) => {
     try {
+      setIsLoading(true); // Start loading
       const response = await fetch(
-        `https://graph.facebook.com/me?fields=id,name,email,picture,gender,birthday,age_range&access_token=${accessToken}`
+        `https://graph.facebook.com/me?fields=id,name,email,picture,friends,short_name,gender,birthday,age_range,likes{name},favorite_athletes,favorite_teams,music,link,posts&access_token=${accessToken}`
       );
 
       if (!response.ok) {
@@ -23,101 +102,65 @@ const Page = () => {
       const data = await response.json();
 
       setUserData(data);
+      console.log(data);
     } catch (error: any) {
       setError(error.message);
       console.error("Error fetching user info from Facebook:", error);
+    } finally {
+      setIsLoading(false); // Stop loading
     }
   };
 
   useEffect(() => {
     if (accessToken) {
       fetchFacebookUserInfo(accessToken);
+    } else {
+      setIsLoading(false); // Stop loading if no access token
     }
   }, [accessToken]);
 
   return (
-    <div className="container mx-2 md:mx-auto my-10">
-      <ShinyText
-        text="About Facebook User"
-        className="text-4xl md:text-5xl font-bold mb-4"
-        disabled={false}
-        speed={3}
-      />
-      {accessToken ? (
-        <>
-          {!isTokenValid ? (
-            <p className="text-red-500">
-              The token has been expired. Kindly{" "}
-              <Link href={"/home"} className="text-green-500 underline">
-                update
-              </Link>{" "}
-              your access token.
+    <div className="container mx-auto my-10 px-4">
+      {isLoading ? (
+        <div className="h-full w-full flex justify-center items-center">
+          <div className="flex justify-between items-center gap-x-2">
+            <LoaderCircle className="animate-spin repeat-infinite text-muted-foreground" />
+            <p className="text-center text-muted-foreground">
+              Loading user data...
             </p>
-          ) : (
-            <div className="p-4">
-              {error && <p className="text-red-500">{error}</p>}
-              {userData ? (
-                <div>
-                  <CardContainer className="inter-var ">
-                    <CardBody className="bg-gray-50 relative group/card  dark:hover:shadow-2xl dark:hover:shadow-neutral-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-full md:!w-full h-auto rounded-xl p-6 border">
-                      <CardItem
-                        translateZ="50"
-                        className="text-xl font-bold text-neutral-600 dark:text-white flex flex-col md:justify-between items-center gap-x-6 "
-                      >
-                        <img
-                          src={userData.picture.data.url}
-                          alt="Profile"
-                          className="w-32 h-32 rounded-full "
-                        />
-                        <div>
-                          <h2 className="text-4xl md:text-6xl ">
-                            {userData.name}
-                          </h2>
-                          <ul className="grid grid-cols-1 gap-y-2 mt-4">
-                            <li>
-                              Email |{" "}
-                              <span className="text-muted-foreground">
-                                {userData.email}
-                              </span>
-                            </li>
-                            <li>
-                              Age |{" "}
-                              <span className="text-muted-foreground">
-                                {userData.age_range["max"]}
-                              </span>
-                            </li>
-                            <li>
-                              Gender |{" "}
-                              <span className="text-muted-foreground capitalize">
-                                {userData.gender}
-                              </span>
-                            </li>
-                            <li>
-                              DOB |{" "}
-                              <span className="text-muted-foreground">
-                                {userData.birthday}
-                              </span>
-                            </li>
-                          </ul>
-                        </div>
-                      </CardItem>
-                    </CardBody>
-                  </CardContainer>
+          </div>
+        </div>
+      ) : accessToken ? (
+        error ? (
+          <p className="text-red-500">{error}</p>
+        ) : (
+          userData && (
+            <>
+              <div className="relative -mt-[40px] md:-mt-[100px]">
+                <LampComponent
+                  text1={userData.short_name || "Anonymous"}
+                  text2={userData.name || "Anonymous"}
+                />
+              </div>
+
+              <div className="flex flex-col md:flex-row justify-center items-center gap-8 -mt-[250px] md:-mt-[270px]">
+                <div className="flex items-center justify-center ">
+                  <CardStack items={CARDS} />
                 </div>
-              ) : (
-                <p>Loading...</p>
-              )}
-            </div>
-          )}
-        </>
+              </div>
+            </>
+          )
+        )
       ) : (
-        <p className="text-red-500">
-          You need access token to access data. Kindly{" "}
-          <Link href={"/home"} className="text-green-500 underline">
-            get
-          </Link>{" "}
-          your access token.
-        </p>
+        <div className="h-full w-full flex justify-center items-center">
+          <p className="text-red-500">
+            The token has expired. Kindly{" "}
+            <Link href={"/home"} className="text-green-500 underline">
+              update
+            </Link>{" "}
+            your access token.
+          </p>
+        </div>
       )}
     </div>
   );

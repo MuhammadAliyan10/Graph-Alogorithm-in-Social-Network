@@ -16,12 +16,19 @@ import { useForm, Controller } from "react-hook-form";
 import { useToast } from "@/hooks/use-toast";
 import LoadingButton from "@/components/LoadingButton";
 import { Input } from "@/components/ui/input";
+import { Highlight } from "@/components/Highlight";
+import { CardStack } from "@/components/card-stack";
+import { CameraIcon, LoaderCircle } from "lucide-react";
+import axios from "axios";
 
 const FacebookDataFetcher: React.FC = () => {
   const { user } = useSession();
   const { toast } = useToast();
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [isImageDialogOpen, setIsImageDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [imageLoading, setImageLoading] = useState(false);
   const [initialData, setInitialData] = useState({
     fullName: user?.fullName || "",
     bio: user?.bio || "",
@@ -30,7 +37,7 @@ const FacebookDataFetcher: React.FC = () => {
   const {
     control,
     handleSubmit,
-    formState: { errors, isDirty }, // isDirty will track if any field is modified
+    formState: { errors, isDirty },
   } = useForm({
     defaultValues: {
       fullName: user?.fullName || "",
@@ -38,8 +45,64 @@ const FacebookDataFetcher: React.FC = () => {
     },
   });
 
+  const CARDS = [
+    {
+      id: 0,
+      name: isLoading ? "Anonymous" : user?.fullName || "Anonymous",
+      designation: "About You",
+      content: (
+        <>
+          {isLoading ? (
+            <div className="flex justify-between items-center gap-x-2">
+              <LoaderCircle className="animate-spin repeat-infinite text-muted-foreground" />
+              <p className="text-center text-muted-foreground">Loading...</p>
+            </div>
+          ) : (
+            <p>
+              Your name is <Highlight>{user?.fullName}</Highlight> and username
+              is <Highlight>{user?.username}</Highlight>. Your email is{" "}
+              <Highlight>{user?.username}</Highlight>. You created this account
+              at{" "}
+              <Highlight>
+                {user?.createdAt
+                  ? new Date(user.createdAt).toLocaleString("en-US", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: true,
+                    })
+                  : "N/A"}
+                .
+              </Highlight>
+            </p>
+          )}
+        </>
+      ),
+    },
+    {
+      id: 1,
+      name: isLoading ? "" : user?.fullName || "Anonymous",
+      designation: "Bio",
+      content: (
+        <>
+          {isLoading ? (
+            <div className="flex justify-between items-center gap-x-2">
+              <LoaderCircle className="animate-spin repeat-infinite text-muted-foreground" />
+              <p className="text-center text-muted-foreground">Loading...</p>
+            </div>
+          ) : (
+            <p>
+              Your bio goes as <Highlight>{user?.bio}</Highlight>
+            </p>
+          )}
+        </>
+      ),
+    },
+  ];
+
   useEffect(() => {
-    // Set the initial data on component mount
     setInitialData({
       fullName: user?.fullName || "",
       bio: user?.bio || "",
@@ -63,26 +126,100 @@ const FacebookDataFetcher: React.FC = () => {
         toast({
           title: "Profile updated",
           description: resData.message,
+          variant: "default", // Changed to success
         });
-        setIsDialogOpen(false);
+        setIsProfileDialogOpen(false);
       } else {
         const errorData = await res.json();
         toast({
           title: "Error updating profile",
           description: errorData.message || "Something went wrong.",
+          variant: "destructive", // Changed to destructive
         });
       }
     } catch (error) {
       toast({
         title: "Error",
         description: "An unexpected error occurred.",
+        variant: "destructive", // Changed to destructive
       });
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Disable the button if no changes are made (i.e., data is unchanged)
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      setImageLoading(true);
+      const file = e.target.files?.[0];
+
+      if (file) {
+        const validTypes = ["image/png", "image/jpg", "image/jpeg"];
+        if (validTypes.includes(file.type)) {
+          setSelectedImage(file); // Store the file itself
+        } else {
+          toast({
+            description: "Please select a PNG, JPG, or JPEG file.",
+            variant: "destructive", // Error toast
+          });
+        }
+      }
+    } catch (error) {
+      toast({
+        description: "Error processing the image.",
+        variant: "destructive", // Error toast
+      });
+    } finally {
+      setImageLoading(false);
+    }
+  };
+
+  const handleImageUpload = async () => {
+    if (!selectedImage) {
+      toast({
+        description: "No image selected.",
+        variant: "destructive", // Error toast
+      });
+      return;
+    }
+
+    try {
+      setImageLoading(true);
+      const formData = new FormData();
+      formData.append("profilePic", selectedImage); // Append the file directly
+
+      // Send the image using multipart/form-data
+      const response = await axios.post(
+        "/api/auth/profile/updateProfileImage", // This endpoint should handle file upload
+        formData
+      );
+
+      if (response.status === 200) {
+        const imageUrl = response.data.imageUrl; // Assuming the response contains the URL of the uploaded image
+
+        // Update the user's profile with the new image URL
+        const updateResponse = await axios.put(
+          "/api/auth/profile/updateProfileImage",
+          { profilePic: imageUrl }
+        );
+
+        if (updateResponse.status === 200) {
+          toast({
+            description: "Profile picture updated successfully!",
+            variant: "default", // Success toast
+          });
+        }
+      }
+    } catch (error) {
+      toast({
+        description: "Failed to upload profile picture.",
+        variant: "destructive", // Error toast
+      });
+    } finally {
+      setImageLoading(false);
+    }
+  };
+
   const isSaveDisabled = !isDirty;
 
   return (
@@ -95,57 +232,27 @@ const FacebookDataFetcher: React.FC = () => {
       </div>
 
       <div className="flex flex-col md:flex-row justify-between items-center gap-8 -mt-[250px] md:-mt-[200px]">
-        <div className="flex items-center justify-center ">
+        <div className="flex items-center justify-center gap-x-3 ">
           <Image
             alt="User Avatar"
             src={user?.profilePic ? user.profilePic : userAvatar}
             width={80}
             height={80}
-            className="w-20 h-20 rounded-full border border-gray-300 z-50"
+            className="w-20 h-20 rounded-full border border-gray-300 z-50 cursor-pointer"
+            onClick={() => setIsImageDialogOpen(true)} // Open the image dialog when clicked
           />
-
-          <ul className="ml-4">
-            <li>
-              <BlurText
-                text={user?.email || ""}
-                className="text-sm text-muted-foreground"
-                delay={50}
-              />
-            </li>
-            <li>
-              <BlurText
-                text={
-                  user?.createdAt
-                    ? new Date(user.createdAt).toLocaleString("en-US", {
-                        day: "2-digit",
-                        month: "short",
-                        year: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        hour12: true,
-                      })
-                    : ""
-                }
-                className="text-sm text-muted-foreground"
-                delay={50}
-              />
-            </li>
-            <li>
-              <BlurText
-                text={user?.bio || "It looks like you don't have a bio yet"}
-                className="text-sm text-muted-foreground"
-                delay={50}
-              />
-            </li>
-          </ul>
+          <CardStack items={CARDS} />
         </div>
 
         <div className="z-50 flex justify-end">
-          <Button onClick={() => setIsDialogOpen(true)}>Update Profile</Button>
+          <Button onClick={() => setIsProfileDialogOpen(true)}>
+            Update Profile
+          </Button>
         </div>
       </div>
 
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      {/* Profile Update Dialog */}
+      <Dialog open={isProfileDialogOpen} onOpenChange={setIsProfileDialogOpen}>
         <DialogContent className="mx-1">
           <DialogHeader>
             <DialogTitle>Update Profile</DialogTitle>
@@ -186,7 +293,11 @@ const FacebookDataFetcher: React.FC = () => {
             </div>
 
             <div className="mt-6 flex justify-end gap-4">
-              <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+              <Button
+                variant="outline"
+                onClick={() => setIsProfileDialogOpen(false)}
+                type="button"
+              >
                 Cancel
               </Button>
               <LoadingButton
@@ -198,6 +309,63 @@ const FacebookDataFetcher: React.FC = () => {
               </LoadingButton>
             </div>
           </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Image Click Dialog */}
+      <Dialog open={isImageDialogOpen} onOpenChange={setIsImageDialogOpen}>
+        <DialogContent className="mx-1">
+          <DialogHeader>
+            <DialogTitle>View Image</DialogTitle>
+          </DialogHeader>
+          <div className="flex flex-col justify-center ">
+            <div className="relative flex justify-center items-center">
+              <div className="relative">
+                <Image
+                  alt="User Avatar"
+                  src={user?.profilePic ? user.profilePic : userAvatar}
+                  width={200}
+                  height={200}
+                  className="rounded-full"
+                />
+                <div className="absolute bottom-[25px] right-[17px]">
+                  <input
+                    type="file"
+                    className="hidden"
+                    id="profileImage"
+                    accept="image/png, image/jpeg, image/jpg"
+                    onChange={handleImageChange}
+                  />
+                  <Button
+                    variant="secondary"
+                    size="icon"
+                    onClick={() =>
+                      document.getElementById("profileImage")?.click()
+                    }
+                    disabled={imageLoading}
+                  >
+                    <CameraIcon />
+                  </Button>
+                </div>
+              </div>
+            </div>
+            <div className="mt-6 flex justify-end gap-4">
+              <LoadingButton
+                loading={imageLoading}
+                disabled={!selectedImage}
+                onClick={handleImageUpload}
+              >
+                Upload Image
+              </LoadingButton>
+              <Button
+                variant="outline"
+                onClick={() => setIsImageDialogOpen(false)}
+                type="button"
+              >
+                Close
+              </Button>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
