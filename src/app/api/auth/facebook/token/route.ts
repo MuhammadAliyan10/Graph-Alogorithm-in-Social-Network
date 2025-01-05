@@ -44,7 +44,7 @@ export async function POST(request: Request) {
     if (
       user.providerId !== facebook_id ||
       user.accessToken !== accessToken ||
-      new Date(user.tokenExpiry) <= currentTime
+      (user.tokenExpiry && user.tokenExpiry <= currentTime)
     ) {
       await prisma.user.update({
         where: { id: loggedInUser.id },
