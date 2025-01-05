@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import ShinyText from "@/components/Animated/ShinyText";
 import LoginFacebook from "@/components/LoginFacebook";
-import { Check } from "lucide-react";
+import { Check, Cross, X } from "lucide-react";
 import { useAuth } from "../AuthContext";
 
 const HomePage: React.FC = () => {
@@ -72,18 +72,32 @@ const HomePage: React.FC = () => {
         ) : (
           <>
             <section className="my-4">
-              <div className="flex items-center gap-x-4">
-                <Check className="text-green-500 w-6 h-6" />
-                {userName ? (
-                  <p className="text-green-500 text-lg font-medium">
-                    {userName}, You are connected to Facebook.
-                  </p>
-                ) : error ? (
-                  <p className="text-red-500 text-lg font-medium">{error}</p>
+              <div className="flex items-center gap-x-3">
+                {!isTokenValid ? (
+                  <>
+                    <X className="text-red-500 w-6 h-6" />
+                    <p className="text-red-600">
+                      Your token has been expired kindly login again.
+                    </p>
+                    <LoginFacebook />
+                  </>
                 ) : (
-                  <p className="text-yellow-500 text-lg font-medium">
-                    Loading user info...
-                  </p>
+                  <>
+                    <Check className="text-green-500 w-6 h-6" />
+                    {userName ? (
+                      <p className="text-green-500 text-lg font-medium">
+                        {userName}, You are connected to Facebook.
+                      </p>
+                    ) : error ? (
+                      <p className="text-red-500 text-lg font-medium">
+                        {error}
+                      </p>
+                    ) : (
+                      <p className="text-yellow-500 text-lg font-medium">
+                        Loading user info...
+                      </p>
+                    )}
+                  </>
                 )}
               </div>
             </section>
