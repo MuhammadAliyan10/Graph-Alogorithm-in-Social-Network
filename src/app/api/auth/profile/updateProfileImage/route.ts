@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { validateRequest } from "@/auth";
 
-export async function POST(request: Request) {
+export async function PUT(request: Request) {
   try {
     const { user: loggedInUser } = await validateRequest();
     if (!loggedInUser) {
@@ -18,8 +18,8 @@ export async function POST(request: Request) {
     }
 
     const { profilePic } = body;
+    console.log(profilePic);
 
-    // Validate that profilePic is provided and it's a valid string
     if (!profilePic || !profilePic.trim()) {
       return NextResponse.json(
         { message: "No profile picture provided." },
@@ -27,7 +27,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Find user from the database
     const user = await prisma.user.findUnique({
       where: { id: loggedInUser.id },
     });
@@ -35,7 +34,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
 
-    // Update the profilePic in the database
     await prisma.user.update({
       where: { id: loggedInUser.id },
       data: { profilePic: profilePic.trim() },

@@ -61,8 +61,7 @@ const FacebookDataFetcher: React.FC = () => {
             <p>
               Your name is <Highlight>{user?.fullName}</Highlight> and username
               is <Highlight>{user?.username}</Highlight>. Your email is{" "}
-              <Highlight>{user?.username}</Highlight>. You created this account
-              at{" "}
+              <Highlight>{user?.email}</Highlight>. You created this account at{" "}
               <Highlight>
                 {user?.createdAt
                   ? new Date(user.createdAt).toLocaleString("en-US", {
@@ -156,7 +155,7 @@ const FacebookDataFetcher: React.FC = () => {
       if (file) {
         const validTypes = ["image/png", "image/jpg", "image/jpeg"];
         if (validTypes.includes(file.type)) {
-          setSelectedImage(file); // Store the file itself
+          setSelectedImage(file);
         } else {
           toast({
             description: "Please select a PNG, JPG, or JPEG file.",
@@ -185,35 +184,21 @@ const FacebookDataFetcher: React.FC = () => {
 
     try {
       setImageLoading(true);
-      const formData = new FormData();
-      formData.append("profilePic", selectedImage); // Append the file directly
-
-      // Send the image using multipart/form-data
-      const response = await axios.post(
-        "/api/auth/profile/updateProfileImage", // This endpoint should handle file upload
-        formData
-      );
+      const imageUrl = URL.createObjectURL(selectedImage);
+      const response = await axios.put("/api/auth/profile/updateProfileImage", {
+        profilePic: imageUrl,
+      });
 
       if (response.status === 200) {
-        const imageUrl = response.data.imageUrl; // Assuming the response contains the URL of the uploaded image
-
-        // Update the user's profile with the new image URL
-        const updateResponse = await axios.put(
-          "/api/auth/profile/updateProfileImage",
-          { profilePic: imageUrl }
-        );
-
-        if (updateResponse.status === 200) {
-          toast({
-            description: "Profile picture updated successfully!",
-            variant: "default", // Success toast
-          });
-        }
+        toast({
+          description: response.data.message,
+          variant: "default",
+        });
       }
     } catch (error) {
       toast({
         description: "Failed to upload profile picture.",
-        variant: "destructive", // Error toast
+        variant: "destructive",
       });
     } finally {
       setImageLoading(false);
