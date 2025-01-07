@@ -125,7 +125,13 @@ const FacebookDataFetcher: React.FC = () => {
         toast({
           title: "Profile updated",
           description: resData.message,
-          variant: "default", // Changed to success
+          variant: "default",
+        });
+        toast({
+          title: "Notifications",
+          description:
+            "We are using cache for memory so kindly refresh the page for changes.",
+          variant: "default",
         });
         setIsProfileDialogOpen(false);
       } else {
@@ -147,25 +153,40 @@ const FacebookDataFetcher: React.FC = () => {
     }
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     try {
       setImageLoading(true);
       const file = e.target.files?.[0];
 
-      if (file) {
-        const validTypes = ["image/png", "image/jpg", "image/jpeg"];
-        if (validTypes.includes(file.type)) {
-          setSelectedImage(file);
-        } else {
-          toast({
-            description: "Please select a PNG, JPG, or JPEG file.",
-            variant: "destructive", // Error toast
-          });
-        }
+      if (!file) {
+        throw new Error("No file selected");
       }
+
+      // File type validation
+      const validTypes = ["image/png", "image/jpg", "image/jpeg"];
+      if (!validTypes.includes(file.type)) {
+        throw new Error(
+          "Invalid file type. Please select a PNG, JPG, or JPEG file."
+        );
+      }
+
+      // File size validation (5MB limit)
+      const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+      if (file.size > MAX_FILE_SIZE) {
+        toast({
+          description:
+            "File size exceeds the 5MB limit. Please select a smaller file.",
+          variant: "destructive",
+        });
+        throw new Error(
+          "File size exceeds the 5MB limit. Please select a smaller file."
+        );
+      }
+
+      setSelectedImage(file);
     } catch (error) {
       toast({
-        description: "Error processing the image.",
+        description: (error as Error).message || "Error processing the image.",
         variant: "destructive", // Error toast
       });
     } finally {
@@ -177,16 +198,25 @@ const FacebookDataFetcher: React.FC = () => {
     if (!selectedImage) {
       toast({
         description: "No image selected.",
-        variant: "destructive", // Error toast
+        variant: "destructive",
       });
       return;
     }
 
     try {
       setImageLoading(true);
-      const imageUrl = URL.createObjectURL(selectedImage);
+
+      const toBase64 = (file: File): Promise<string> =>
+        new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = (error) => reject(error);
+          reader.readAsDataURL(file);
+        });
+
+      const base64Image = await toBase64(selectedImage);
       const response = await axios.put("/api/auth/profile/updateProfileImage", {
-        profilePic: imageUrl,
+        profilePic: base64Image,
       });
 
       if (response.status === 200) {
@@ -194,10 +224,25 @@ const FacebookDataFetcher: React.FC = () => {
           description: response.data.message,
           variant: "default",
         });
+        toast({
+          title: "Profile Image",
+          description: response.data.message,
+          variant: "default",
+        });
+        toast({
+          title: "Notifications",
+          description:
+            "We are using cache for memory, so kindly refresh the page for changes.",
+          variant: "default",
+        });
+        setIsImageDialogOpen(false);
+      } else {
+        throw new Error("Failed to upload profile picture.");
       }
     } catch (error) {
       toast({
-        description: "Failed to upload profile picture.",
+        description:
+          (error as Error).message || "Failed to upload profile picture.",
         variant: "destructive",
       });
     } finally {
@@ -223,8 +268,8 @@ const FacebookDataFetcher: React.FC = () => {
             src={user?.profilePic ? user.profilePic : userAvatar}
             width={80}
             height={80}
-            className="w-20 h-20 rounded-full border border-gray-300 z-50 cursor-pointer"
-            onClick={() => setIsImageDialogOpen(true)} // Open the image dialog when clicked
+            className="w-20 h-20 rounded-full border object-cover border-gray-300 z-50 cursor-pointer"
+            onClick={() => setIsImageDialogOpen(true)}
           />
           <CardStack items={CARDS} />
         </div>
@@ -311,7 +356,7 @@ const FacebookDataFetcher: React.FC = () => {
                   src={user?.profilePic ? user.profilePic : userAvatar}
                   width={200}
                   height={200}
-                  className="rounded-full"
+                  className="w-40 h-30 rounded-full object-cover border border-gray-300 z-50 cursor-pointer"
                 />
                 <div className="absolute bottom-[25px] right-[17px]">
                   <input

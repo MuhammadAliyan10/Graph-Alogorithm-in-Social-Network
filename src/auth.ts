@@ -103,8 +103,6 @@ export const validateRequest = cache(
           }
         : null;
 
-      console.log(user);
-
       return {
         user,
         session,
