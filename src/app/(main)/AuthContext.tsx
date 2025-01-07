@@ -10,6 +10,7 @@ import React, {
 
 interface AuthContextType {
   accessToken: string | null;
+  accessTokenLoadingState: boolean;
   setAccessToken: (token: string | null) => void;
   isTokenValid: boolean;
 }
@@ -18,9 +19,12 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [accessTokenLoadingState, setAccessTokenLoadingState] =
+    useState<boolean>(false);
   const [isTokenValid, setIsTokenValid] = useState<boolean>(true);
 
   const getAccessToken = async () => {
+    setAccessTokenLoadingState(true);
     try {
       const response = await fetch("/api/auth/facebook/getToken", {
         method: "GET",
@@ -28,6 +32,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
 
       if (!response.ok) {
+        setAccessTokenLoadingState(false);
         throw new Error("Failed to fetch access token");
       }
 
@@ -35,10 +40,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const token = await data.accessToken;
       setAccessToken(token);
       setIsTokenValid(true);
+      setAccessTokenLoadingState(false);
     } catch (error) {
       console.error("Error fetching access token:", error);
       setAccessToken(null);
       setIsTokenValid(false);
+      setAccessTokenLoadingState(false);
+    } finally {
+      setAccessTokenLoadingState(false);
     }
   };
 
@@ -84,7 +93,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ accessToken, setAccessToken, isTokenValid }}>
+    <AuthContext.Provider
+      value={{
+        accessToken,
+        setAccessToken,
+        accessTokenLoadingState,
+        isTokenValid,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

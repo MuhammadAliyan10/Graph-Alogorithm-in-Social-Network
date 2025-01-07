@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import { LampComponent } from "@/components/Global/lamp";
 import { useSession } from "../SessionProvider";
-import { BlurText } from "@/components/Animated/BlurText";
 import Image from "next/image";
 import userAvatar from "@/assets/UserAvatar.png";
 import { Button } from "@/components/ui/button";
