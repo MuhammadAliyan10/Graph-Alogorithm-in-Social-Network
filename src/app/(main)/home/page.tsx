@@ -43,7 +43,7 @@ const HomePage: React.FC = () => {
 
   return (
     <div className="m-10">
-      {accessTokenLoadingState ? (
+      {!accessTokenLoadingState ? (
         <div className="flex flex-col justify-center h-screen">
           <ShinyText
             text="Welcome to NetWiz"
@@ -138,7 +138,7 @@ const HomePage: React.FC = () => {
         <div className="h-full w-full flex justify-center items-center">
           <div className="flex justify-between items-center gap-x-2">
             <LoaderCircle className="animate-spin repeat-infinite text-muted-foreground" />
-            <p className="text-center text-muted-foreground">
+            <p className="text-center text-green-500 ">
               Checking access token...
             </p>
           </div>
