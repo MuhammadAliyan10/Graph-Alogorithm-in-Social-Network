@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
   const challenge = searchParams.get("hub.challenge");
 
   if (mode === "subscribe" && token === VERIFY_TOKEN) {
-    return NextResponse.json(challenge, { status: 200 });
+    return new Response(challenge, { status: 200 }); // Return plain string
   } else {
     return NextResponse.json("Forbidden", { status: 403 });
   }
