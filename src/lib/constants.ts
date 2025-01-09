@@ -12,70 +12,70 @@ export const products = [
   {
     title: "Moonbeam",
     link: "https://gomoonbeam.com",
-    thumbnail: "/MainHome.png",
+    thumbnail: "/Home.png",
   },
   {
     title: "Cursor",
     link: "https://cursor.so",
-    thumbnail: "/MainHome1.png",
+    thumbnail: "/About.png",
   },
   {
     title: "Rogue",
     link: "https://userogue.com",
-    thumbnail: "/Profile.png",
+    thumbnail: "/p4.png",
   },
 
   {
     title: "Editorially",
     link: "https://editorially.org",
-    thumbnail: "/p4.png",
+    thumbnail: "/FriendsSuggestion.png",
   },
   {
     title: "Editrix AI",
     link: "https://editrix.ai",
-    thumbnail: "/p5.png",
+    thumbnail: "/SocialLinks.png",
   },
   {
     title: "Pixel Perfect",
     link: "https://app.pixelperfect.quest",
-    thumbnail: "/p6.png",
+    thumbnail: "/Home.png",
   },
 
   {
     title: "Algochurn",
     link: "https://algochurn.com",
-    thumbnail: "/p1.png",
+    thumbnail: "/About.png",
   },
   {
     title: "Aceternity UI",
     link: "https://ui.aceternity.com",
-    thumbnail: "/p2.png",
+    thumbnail: "/p3.png",
   },
   {
     title: "Tailwind Master Kit",
     link: "https://tailwindmasterkit.com",
-    thumbnail: "/p3.png",
+    thumbnail: "/p1.png",
   },
   {
     title: "SmartBridge",
     link: "https://smartbridgetech.com",
-    thumbnail: "/p4.png",
+    thumbnail: "/FriendsSuggestion.png",
   },
   {
     title: "Renderwork Studio",
     link: "https://renderwork.studio",
-    thumbnail: "/p5.png",
+    thumbnail: "/SocialLinks.png",
   },
 
   {
     title: "Creme Digital",
     link: "https://cremedigital.com",
-    thumbnail: "/p6.png",
+    thumbnail: "/p1.png",
   },
   {
     title: "Golden Bells Academy",
     link: "https://goldenbellsacademy.com",
-    thumbnail: "/p1.png",
+    thumbnail: "/FriendsSuggestion.png",
   },
   {
     title: "Invoker Labs",
@@ -85,7 +85,7 @@ export const products = [
   {
     title: "E Free Invoice",
     link: "https://efreeinvoice.com",
-    thumbnail: "/p3.png",
+    thumbnail: "/p1.png",
   },
 ];
 

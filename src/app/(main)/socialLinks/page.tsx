@@ -1,10 +1,18 @@
 "use client";
+
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import {
+  useNodesState,
+  useEdgesState,
+  addEdge,
+  Background,
+  Connection,
+} from "reactflow";
+import "reactflow/dist/style.css";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
 import {
   Dialog,
   DialogContent,
@@ -14,35 +22,57 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-
-const ReactFlow = dynamic(
-  () => import("reactflow").then((mod) => mod.ReactFlow),
-  { ssr: false }
-);
-import "reactflow/dist/style.css";
 import { Label } from "@/components/ui/label";
 import { DialogClose } from "@radix-ui/react-dialog";
 import ShinyText from "@/components/Animated/ShinyText";
 
+const ReactFlow = dynamic(
+  () => import("reactflow").then((mod) => mod.ReactFlow),
+  {
+    ssr: false,
+  }
+);
+
 export default function GraphPage() {
-  const [nodes, setNodes] = useState([
-    { id: "1", data: { label: "Google" }, position: { x: 300, y: 5 } },
-    { id: "2", data: { label: "Facebook" }, position: { x: 100, y: 100 } },
-    { id: "3", data: { label: "Instagram" }, position: { x: 300, y: 100 } },
-    { id: "4", data: { label: "TikTok" }, position: { x: 500, y: 100 } },
-    { id: "5", data: { label: "X" }, position: { x: 300, y: 200 } },
-  ]);
+  const initialNodes = [
+    {
+      id: "1",
+      type: "input",
+      data: { label: "Gmail" },
+      position: { x: -150, y: 0 },
+    },
+    {
+      id: "2",
+      type: "input",
+      data: { label: "Instagram" },
+      position: { x: 150, y: 0 },
+    },
+    { id: "3", data: { label: "Google" }, position: { x: 0, y: 100 } },
+    { id: "4", data: { label: "Facebook" }, position: { x: 0, y: 200 } },
+    {
+      id: "5",
+      type: "output",
+      data: { label: "X" },
+      position: { x: 0, y: 300 },
+    },
+  ];
 
-  const [edges, setEdges] = useState([
-    { id: "e1-2", source: "1", target: "2", animated: true },
-    { id: "e1-3", source: "1", target: "3", animated: true },
-    { id: "e1-4", source: "1", target: "4", animated: true },
-    { id: "e2-5", source: "2", target: "5", animated: true },
-    { id: "e3-5", source: "3", target: "5", animated: true },
-  ]);
+  const initialEdges = [
+    { id: "1->3", source: "1", target: "3" },
+    { id: "2->3", source: "2", target: "3" },
+    { id: "3->4", source: "3", target: "4" },
+    { id: "4->5", source: "4", target: "5" },
+  ];
 
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [newNodeName, setNewNodeName] = useState("");
   const [newNodeGroup, setNewNodeGroup] = useState("");
+
+  const onConnect = useCallback(
+    (params: Connection) => setEdges((eds: Edge[]) => addEdge(params, eds)),
+    []
+  );
 
   const addNode = () => {
     if (!newNodeName || !newNodeGroup) {
@@ -51,37 +81,63 @@ export default function GraphPage() {
     }
 
     const newNode = {
-      id: `${nodes.length + 1}`,
-      data: { label: newNodeName },
-      position: { x: Math.random() * 400, y: Math.random() * 400 },
+      id: (nodes.length + 1).toString(),
+      data: { label: `${newNodeName} (${newNodeGroup})` },
+      position: { x: Math.random() * 400 - 200, y: Math.random() * 400 - 200 },
     };
 
-    setNodes((prevNodes) => [...prevNodes, newNode]);
-
-    const newEdge = {
-      id: `e${nodes.length + 1}-${nodes.length + 2}`,
-      source: `${nodes.length + 1}`,
-      target: `${nodes.length + 2}`,
-      animated: true,
-    };
-
-    setEdges((prevEdges) => [...prevEdges, newEdge]);
-
+    setNodes((nds) => [...nds, newNode]);
     setNewNodeName("");
     setNewNodeGroup("");
   };
-  const onNodeContextMenu = (event: any, node: any) => {
-    event.preventDefault();
-    // Show context menu (edit/delete options)
-  };
 
-  const onNodeDragStop = (event: any, node: any) => {
-    setNodes((prevNodes) =>
-      prevNodes.map((n) =>
-        n.id === node.id ? { ...n, position: node.position } : n
-      )
-    );
-  };
+  interface Node {
+    id: string;
+    type?: string;
+    data: { label: string };
+    position: { x: number; y: number };
+  }
+
+  interface Edge {
+    id: string;
+    source: string;
+    target: string;
+  }
+
+  const onNodesDelete = useCallback(
+    (deleted: Node[]) => {
+      setEdges((eds: Edge[]) =>
+        deleted.reduce((acc: Edge[], node: Node) => {
+          const incomers = nodes.filter(
+            (n: Node) =>
+              n.id !== node.id && edges.some((e: Edge) => e.target === n.id)
+          );
+          const outgoers = nodes.filter(
+            (n: Node) =>
+              n.id !== node.id && edges.some((e: Edge) => e.source === n.id)
+          );
+          const connectedEdges = edges.filter(
+            (e: Edge) => e.source === node.id || e.target === node.id
+          );
+
+          const remainingEdges = acc.filter(
+            (edge: Edge) => !connectedEdges.includes(edge)
+          );
+
+          const createdEdges = incomers.flatMap((incomer: Node) =>
+            outgoers.map((outgoer: Node) => ({
+              id: `${incomer.id}->${outgoer.id}`,
+              source: incomer.id,
+              target: outgoer.id,
+            }))
+          );
+
+          return [...remainingEdges, ...createdEdges];
+        }, eds)
+      );
+    },
+    [nodes, edges]
+  );
   const customStyles = {
     node: {
       color: "text-muted-foreground ",
@@ -116,9 +172,13 @@ export default function GraphPage() {
                 ...edge,
                 style: customStyles.edge,
               }))}
-              onNodeDragStop={onNodeDragStop}
-              onNodeContextMenu={onNodeContextMenu}
-            />
+              onNodesChange={onNodesChange}
+              onNodesDelete={onNodesDelete}
+              onEdgesChange={onEdgesChange}
+              onConnect={onConnect}
+              fitView
+              attributionPosition="bottom-right"
+            ></ReactFlow>
           </div>
 
           <Dialog>

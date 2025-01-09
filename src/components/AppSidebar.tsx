@@ -41,15 +41,15 @@ export function AppSidebar({
       ),
     },
     {
-      label: "Social Graph",
-      href: "/graph",
+      label: "Social Links",
+      href: "/socialLinks",
       icon: (
         <IconGraph className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
     },
     {
       label: "Friend Suggestions",
-      href: "/networkEvolution",
+      href: "/friendsSuggestion",
       icon: (
         <IconFriends className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),

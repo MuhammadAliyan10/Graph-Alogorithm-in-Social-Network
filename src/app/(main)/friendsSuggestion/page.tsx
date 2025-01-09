@@ -10,12 +10,13 @@ import {
   applyNodeChanges,
   applyEdgeChanges,
   Connection,
+  MiniMap,
+  Controls,
 } from "reactflow";
 import "reactflow/dist/style.css";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import ShinyText from "@/components/Animated/ShinyText";
 
-// User type for our mock users
 interface User {
   id: string;
   name: string;
@@ -51,31 +52,37 @@ const Page: React.FC = () => {
     },
     {
       id: "2",
-      data: { label: "Usama" },
+      data: { label: "Usama Zulfiqar" },
       position: { x: 150, y: 100 },
       type: "default",
     },
     {
       id: "3",
-      data: { label: "Zarar" },
+      data: { label: "Muhammad Zarar" },
       position: { x: 250, y: 150 },
       type: "default",
     },
     {
       id: "4",
-      data: { label: "Shahzaib" },
+      data: { label: "Hashir Abdullah" },
       position: { x: 300, y: 200 },
       type: "default",
     },
     {
       id: "5",
-      data: { label: "Noor" },
+      data: { label: "Noor-ul-Ain" },
       position: { x: 350, y: 250 },
       type: "default",
     },
     {
       id: "6",
-      data: { label: "Mohsin" },
+      data: { label: "Mohsin Akhlaq" },
+      position: { x: 400, y: 300 },
+      type: "default",
+    },
+    {
+      id: "7",
+      data: { label: "Hafiz Zubair" },
       position: { x: 400, y: 300 },
       type: "default",
     },
@@ -117,25 +124,51 @@ const Page: React.FC = () => {
       label: "Friend",
       markerEnd: { type: MarkerType.ArrowClosed },
     },
+    {
+      id: "e3-7",
+      source: "3",
+      target: "7",
+      label: "Friend",
+      markerEnd: { type: MarkerType.ArrowClosed },
+    },
   ];
 
   const mockUsers: User[] = [
-    { id: "1", name: "Muhammad Aliyan", interests: ["Football", "Coding"] },
-    { id: "2", name: "Usama", interests: ["TikTok"] },
-    { id: "3", name: "Zarar", interests: ["TikTok", "Gaming"] },
-    { id: "4", name: "Shahzaib", interests: ["Football", "Gaming"] },
-    { id: "5", name: "Noor", interests: ["TikTok", "Gaming"] },
-    { id: "6", name: "Mohsin", interests: ["TikTok", "Blogs"] },
+    {
+      id: "1",
+      name: "Muhammad Aliyan",
+      interests: ["Football", "Coding", "GYM", "Chess"],
+    },
+    { id: "2", name: "Usama Zulfiqar", interests: ["TikTok", "Cricket"] },
+    {
+      id: "3",
+      name: "Muhammad Zarar",
+      interests: ["TikTok", "Gaming", "Instagram"],
+    },
+    {
+      id: "4",
+      name: "Hashir Abdullah",
+      interests: ["Coding", "Gaming", "Instagram"],
+    },
+    { id: "5", name: "Noor-ul-Ain", interests: ["TikTok", "Gaming"] },
+    {
+      id: "6",
+      name: "Mohsin Akhlaq",
+      interests: ["TikTok", "Blogs", "Cricket"],
+    },
+    {
+      id: "7",
+      name: "Hafiz Zubair",
+      interests: ["TikTok", "Instagram", "Songs"],
+    },
   ];
 
-  // React Flow State
   const [nodes, setNodes] = useState<CustomNode[]>(initialNodes);
   const [edges, setEdges] = useState<CustomEdge[]>(initialEdges);
   const [users, setUsers] = useState<User[]>(mockUsers);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
   const onConnect = useCallback((connection: Connection) => {
-    // Map the connection to a CustomEdge
     if (connection.source && connection.target) {
       const newEdge: CustomEdge = {
         id: `e${connection.source}-${connection.target}`,
@@ -148,7 +181,6 @@ const Page: React.FC = () => {
     }
   }, []);
 
-  // Add New Node Dynamically
   const addNode = (name: string) => {
     const id = (nodes.length + 1).toString();
     const newNode: CustomNode = {
@@ -160,7 +192,6 @@ const Page: React.FC = () => {
     setNodes((nds) => [...nds, newNode]);
   };
 
-  // Suggest Friends Based on Interests
   const suggestFriends = (currentUser: User): User[] => {
     return users.filter(
       (user) =>
@@ -172,7 +203,6 @@ const Page: React.FC = () => {
   };
   const onEdgesChange = (changes: EdgeChange[]) =>
     setEdges((eds) => {
-      // Apply changes and cast the result to CustomEdge[]
       const updatedEdges = applyEdgeChanges(changes, eds) as CustomEdge[];
       return updatedEdges;
     });
@@ -183,7 +213,6 @@ const Page: React.FC = () => {
     setSelectedUser(user);
 
     const suggestions = suggestFriends(user);
-    console.log("Suggested Friends:", suggestions);
 
     suggestions.forEach((friend) => {
       if (!nodes.find((node) => node.id === friend.id)) {
@@ -209,22 +238,26 @@ const Page: React.FC = () => {
   return (
     <div className="container my-8 mx-1 md:mx-auto">
       <ShinyText
-        text="Network Evolution"
-        className="text-4xl md:text-5xl font-bold mb-4"
+        text="Friends Suggestion"
+        className="text-4xl md:text-5xl font-bold mb-8"
         disabled={false}
         speed={3}
       />
       <div className="flex flex-col lg:flex-row min-h-screen">
         <div className="w-full lg:w-1/5 p-2 ">
           <div>
-            <h4 className="text-lg font-medium mb-4 text-muted-foreground">
-              Users
-            </h4>
+            <ShinyText
+              text="Friends"
+              className="md:text-xl text-lg font-bold mb-4 text-muted-foreground"
+              disabled={false}
+              speed={3}
+            />
+
             <ul className="space-y-4">
               {users.map((user) => (
                 <li
                   key={user.id}
-                  className="p-3 bg-muted shadow-md hover:bg-gray-100 cursor-pointer transition-all duration-300 text-muted-foreground"
+                  className="p-3 bg-inherit border-b border-gray-500 shadow-md rounded-md hover:bg-gray-100 cursor-pointer transition-all duration-300 text-muted-foreground"
                   onClick={() => handleUserClick(user.id)}
                 >
                   {user.name}
@@ -234,7 +267,12 @@ const Page: React.FC = () => {
           </div>
           {selectedUser && (
             <div className="mt-8">
-              <h4 className="text-lg font-medium mb-4 ">Selected User</h4>
+              <ShinyText
+                text="Selected Friend"
+                className="md:text-xl text-lg font-bold mb-4 text-muted-foreground"
+                disabled={false}
+                speed={3}
+              />
               <div className="p-4 bg-white rounded-xl shadow-md">
                 <p className="text-sm text-gray-700">
                   <strong>Name:</strong> {selectedUser.name}
@@ -248,19 +286,25 @@ const Page: React.FC = () => {
           )}
         </div>
 
-        <div className="flex-1  p-6">
-          <Card className=" w-full shadow-xl">
+        <div className="flex-1 p-6">
+          <Card className="w-full shadow-xl">
             <CardHeader>
-              <div className="text-xl font-semibold">User Network</div>
+              <ShinyText
+                text="Friends Network"
+                className="md:text-xl text-lg font-bold mb-4 text-muted-foreground"
+                disabled={false}
+                speed={2}
+              />
             </CardHeader>
             <CardContent>
               <div style={{ width: "100%", height: "500px" }}>
                 <ReactFlow
                   nodes={nodes.map((node) => ({
                     ...node,
+
                     data: {
                       label: (
-                        <Card className="p-2">
+                        <Card className="p-1 rounded-lg">
                           <CardHeader>
                             <div className="font-semibold text-md">
                               {node.data.label}
@@ -268,6 +312,16 @@ const Page: React.FC = () => {
                           </CardHeader>
                         </Card>
                       ),
+                    },
+                    style: {
+                      backgroundColor: "#F6F9FB",
+                      borderRadius: "10px",
+                      fontFamily: "Arial, sans-serif",
+                      padding: "4px", // Balanced padding
+                      boxShadow: "0 6px 12px rgba(0, 0, 0, 0.2)", // Subtle shadow for depth
+                      color: "#f8fafc", // Light text color for contrast
+                      fontSize: "14px", // Readable font size
+                      border: "1px solid #475569", // Slight border to define card edges
                     },
                   }))}
                   edges={edges}
@@ -277,7 +331,9 @@ const Page: React.FC = () => {
                   onEdgesChange={onEdgesChange}
                   onConnect={onConnect}
                   fitView
-                />
+                >
+                  <Controls />
+                </ReactFlow>
               </div>
             </CardContent>
           </Card>
