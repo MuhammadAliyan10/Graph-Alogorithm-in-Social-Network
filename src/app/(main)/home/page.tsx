@@ -42,7 +42,7 @@ const HomePage: React.FC = () => {
   };
 
   return (
-    <div className="m-10">
+    <div className="m-10 pt-5 md:pt-0">
       {!accessTokenLoadingState ? (
         <div className="flex flex-col justify-center h-screen">
           <ShinyText

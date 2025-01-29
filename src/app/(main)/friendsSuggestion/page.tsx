@@ -257,7 +257,7 @@ const Page: React.FC = () => {
               {users.map((user) => (
                 <li
                   key={user.id}
-                  className="p-3 bg-inherit border-b border-gray-500 shadow-md rounded-md hover:bg-gray-100 cursor-pointer transition-all duration-300 text-muted-foreground"
+                  className="p-3 bg-inherit border-b border-gray-500 shadow-md hover:text-white cursor-pointer transition-all duration-300 text-muted-foreground"
                   onClick={() => handleUserClick(user.id)}
                 >
                   {user.name}
@@ -273,7 +273,7 @@ const Page: React.FC = () => {
                 disabled={false}
                 speed={3}
               />
-              <div className="p-4 bg-white rounded-xl shadow-md">
+              <div className="p-3 bg-white rounded-sm shadow-md">
                 <p className="text-sm text-gray-700">
                   <strong>Name:</strong> {selectedUser.name}
                 </p>

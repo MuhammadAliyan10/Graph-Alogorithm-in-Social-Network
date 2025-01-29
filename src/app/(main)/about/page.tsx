@@ -102,7 +102,6 @@ const Page = () => {
       const data = await response.json();
 
       setUserData(data);
-      console.log(data);
     } catch (error: any) {
       setError(error.message);
       console.error("Error fetching user info from Facebook:", error);

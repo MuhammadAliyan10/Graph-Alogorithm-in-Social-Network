@@ -353,11 +353,11 @@ const FacebookDataFetcher: React.FC = () => {
                 <Image
                   alt="User Avatar"
                   src={user?.profilePic ? user.profilePic : userAvatar}
-                  width={200}
-                  height={200}
-                  className="w-40 h-30 rounded-full object-cover border border-gray-300 z-50 cursor-pointer"
+                  width={150}
+                  height={400}
+                  className="w-[10rem] h-[10rem] rounded-full border object-cover border-gray-300 z-50 cursor-pointer"
                 />
-                <div className="absolute bottom-[25px] right-[17px]">
+                <div className="absolute bottom-[23px] right-[8px] rounded-full">
                   <input
                     type="file"
                     className="hidden"
